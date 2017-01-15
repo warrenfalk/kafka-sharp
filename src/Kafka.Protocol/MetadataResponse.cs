@@ -55,7 +55,7 @@ namespace Kafka.Protocol
             ControllerId = controllerId;
         }
 
-        public static ParserVersions<MetadataResponse> Parse = new ParserVersions<MetadataResponse>(
+        public static DecoderVersions<MetadataResponse> Decode = new DecoderVersions<MetadataResponse>(
             reader => new MetadataResponseImpl(
                 version: 0,
                 brokers: reader.ReadList(BrokerMetadataImpl.Versions[0]),
@@ -89,7 +89,7 @@ namespace Kafka.Protocol
             Rack = rack;
         }
 
-        public static ParserVersions<BrokerMetadata> Versions = new ParserVersions<BrokerMetadata>(
+        public static DecoderVersions<BrokerMetadata> Versions = new DecoderVersions<BrokerMetadata>(
             reader => new BrokerMetadataImpl(
                 nodeId: reader.ReadInt32(),
                 hostName: reader.ReadString(),
@@ -123,7 +123,7 @@ namespace Kafka.Protocol
             IsInternal = isInternal;
         }
 
-        public static ParserVersions<TopicMetadata> Versions = new ParserVersions<TopicMetadata>(
+        public static DecoderVersions<TopicMetadata> Versions = new DecoderVersions<TopicMetadata>(
             reader => new TopicMetadataImpl(
                 topicErrorCode: reader.ReadInt16(),
                 topicName: reader.ReadString(),
@@ -161,13 +161,13 @@ namespace Kafka.Protocol
             Isr = isr;
         }
 
-        public static ParserVersions<PartitionMetadata> Versions = new ParserVersions<PartitionMetadata>(
+        public static DecoderVersions<PartitionMetadata> Versions = new DecoderVersions<PartitionMetadata>(
             reader => new PartitionMetadataImpl(
                 partitionErrorCode: reader.ReadInt16(),
                 partitionId: reader.ReadInt32(),
                 leader: reader.ReadInt32(),
-                replicas: reader.ReadList(Protocol.Parse.Int32),
-                isr: reader.ReadList(Protocol.Parse.Int32)
+                replicas: reader.ReadList(Protocol.Decode.Int32),
+                isr: reader.ReadList(Protocol.Decode.Int32)
             )
         );
     }

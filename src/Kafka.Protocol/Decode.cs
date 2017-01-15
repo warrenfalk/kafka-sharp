@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Kafka.Protocol
 {
-    public static class Parse
+    public static class Decode
     {
-        public static MetadataResponse MetadataResponse(int version, ProtocolStreamReader reader) => MetadataResponseImpl.Parse[version](reader);
+        public static MetadataResponse MetadataResponse(int version, ProtocolStreamReader reader) => MetadataResponseImpl.Decode[version](reader);
 
         public static bool Boolean(ProtocolStreamReader reader) => reader.Read(1, Boolean);
         public static bool Boolean(byte[] memory, long offset)
@@ -61,7 +61,7 @@ namespace Kafka.Protocol
         public static string StringChars(byte[] memory, long offset, long length)
         {
             if (offset > int.MaxValue || length > int.MaxValue)
-                throw new NotImplementedException($"TODO: implement long indexers in {typeof(Parse).Name}.{nameof(StringChars)}");
+                throw new NotImplementedException($"TODO: implement long indexers in {typeof(Decode).Name}.{nameof(StringChars)}");
             return Encoding.UTF8.GetString(memory, (int)offset, (int)length);
         }
 
@@ -71,12 +71,12 @@ namespace Kafka.Protocol
             return length < 0 ? null : reader.Read(length, StringChars);
         }
 
-        public static IEnumerable<T> List<T>(ProtocolStreamReader reader, Func<ProtocolStreamReader, T> parseFunc)
+        public static IEnumerable<T> List<T>(ProtocolStreamReader reader, Func<ProtocolStreamReader, T> decodeFunc)
         {
             var count = reader.ReadInt32();
             T[] items = new T[count];
             for (var i = 0; i < count; i++)
-                items[i] = parseFunc(reader);
+                items[i] = decodeFunc(reader);
             return items;
         }
     }

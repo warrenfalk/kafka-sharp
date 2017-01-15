@@ -22,34 +22,34 @@ namespace Kafka.Protocol
             : this(stream.AsReadable())
         { }
 
-        public IEnumerable<T> ReadList<T>(Func<ProtocolStreamReader, T> parseFunc) => Parse.List<T>(this, parseFunc);
+        public IEnumerable<T> ReadList<T>(Func<ProtocolStreamReader, T> decodeFunc) => Decode.List<T>(this, decodeFunc);
 
-        public bool ReadBoolean() => Parse.Boolean(this);
+        public bool ReadBoolean() => Decode.Boolean(this);
 
-        public sbyte ReadInt8() => Parse.Int8(this);
+        public sbyte ReadInt8() => Decode.Int8(this);
 
-        public short ReadInt16() => Parse.Int16(this);
+        public short ReadInt16() => Decode.Int16(this);
 
-        public int ReadInt32() => Parse.Int32(this);
+        public int ReadInt32() => Decode.Int32(this);
 
-        public long ReadInt64() => Parse.Int64(this);
+        public long ReadInt64() => Decode.Int64(this);
 
-        public string ReadString() => Parse.String(this);
+        public string ReadString() => Decode.String(this);
 
-        public string ReadNullableString() => Parse.NullableString(this);
+        public string ReadNullableString() => Decode.NullableString(this);
 
-        public T Read<T>(int size, Func<byte[], long, T> parse)
+        public T Read<T>(int size, Func<byte[], long, T> decode)
         {
             WaitFor(size);
-            var value = parse(Buffer, 0);
+            var value = decode(Buffer, 0);
             Reset();
             return value;
         }
 
-        public T Read<T>(int size, Func<byte[], long, long, T> parse)
+        public T Read<T>(int size, Func<byte[], long, long, T> decode)
         {
             WaitFor(size);
-            var value = parse(Buffer, 0, size);
+            var value = decode(Buffer, 0, size);
             Reset();
             return value;
         }

@@ -5,18 +5,18 @@ using System.Threading.Tasks;
 
 namespace Kafka.Protocol
 {
-    public class ParserVersions<T>
+    public class DecoderVersions<T>
     {
         private Func<ProtocolStreamReader, T>[] ParseFuncs { get; }
 
-        public ParserVersions(params Func<ProtocolStreamReader, T>[] parseFuncs)
+        public DecoderVersions(params Func<ProtocolStreamReader, T>[] decodeFuncs)
         {
-            ParseFuncs = parseFuncs;
+            ParseFuncs = decodeFuncs;
         }
 
         public Func<ProtocolStreamReader, T> this[int version] => ParseFuncs[version];
 
-        public T Parse(int version, ProtocolStreamReader reader) => ParseFuncs[version](reader);
+        public T Decode(int version, ProtocolStreamReader reader) => ParseFuncs[version](reader);
 
         public int MaxVersion => ParseFuncs.Length - 1;
     }
