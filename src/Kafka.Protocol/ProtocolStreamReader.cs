@@ -38,7 +38,7 @@ namespace Kafka.Protocol
 
         public string ReadNullableString() => Decode.NullableString(this);
 
-        public T Read<T>(int size, Func<byte[], long, T> decode)
+        public T Read<T>(int size, Func<byte[], int, T> decode)
         {
             WaitFor(size);
             var value = decode(Buffer, 0);
@@ -46,7 +46,7 @@ namespace Kafka.Protocol
             return value;
         }
 
-        public T Read<T>(int size, Func<byte[], long, long, T> decode)
+        public T Read<T>(int size, Func<byte[], int, int, T> decode)
         {
             WaitFor(size);
             var value = decode(Buffer, 0, size);

@@ -11,19 +11,19 @@ namespace Kafka.Protocol
         public static MetadataResponse MetadataResponse(int version, ProtocolStreamReader reader) => MetadataResponseImpl.Decode[version](reader);
 
         public static bool Boolean(ProtocolStreamReader reader) => reader.Read(1, Boolean);
-        public static bool Boolean(byte[] memory, long offset)
+        public static bool Boolean(byte[] memory, int offset)
         {
             return memory[offset] != 0;
         }
 
         public static sbyte Int8(ProtocolStreamReader reader) => reader.Read(1, Int8);
-        public static sbyte Int8(byte[] memory, long offset)
+        public static sbyte Int8(byte[] memory, int offset)
         {
             return (sbyte)memory[offset];
         }
 
         public static short Int16(ProtocolStreamReader reader) => reader.Read(2, Int16);
-        public static short Int16(byte[] memory, long offset)
+        public static short Int16(byte[] memory, int offset)
         {
             return (short)
                 (memory[offset] << 0x8
@@ -32,7 +32,7 @@ namespace Kafka.Protocol
         }
 
         public static int Int32(ProtocolStreamReader reader) => reader.Read(4, Int32);
-        public static int Int32(byte[] memory, long offset)
+        public static int Int32(byte[] memory, int offset)
         {
             return (int)
                 (memory[offset] << 0x18
@@ -43,7 +43,7 @@ namespace Kafka.Protocol
         }
 
         public static long Int64(ProtocolStreamReader reader) => reader.Read(8, Int64);
-        public static long Int64(byte[] memory, long offset)
+        public static long Int64(byte[] memory, int offset)
         {
             return (long)
                 ((long)memory[offset] << 0x38
@@ -58,10 +58,8 @@ namespace Kafka.Protocol
         }
 
         public static string String(ProtocolStreamReader reader) => reader.Read(reader.ReadInt16(), StringChars);
-        public static string StringChars(byte[] memory, long offset, long length)
+        public static string StringChars(byte[] memory, int offset, int length)
         {
-            if (offset > int.MaxValue || length > int.MaxValue)
-                throw new NotImplementedException($"TODO: implement long indexers in {typeof(Decode).Name}.{nameof(StringChars)}");
             return Encoding.UTF8.GetString(memory, (int)offset, (int)length);
         }
 
