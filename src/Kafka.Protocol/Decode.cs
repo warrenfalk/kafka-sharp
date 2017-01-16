@@ -9,6 +9,7 @@ namespace Kafka.Protocol
     public static class Decode
     {
         public static MetadataResponse MetadataResponse(int version, ProtocolStreamReader reader) => MetadataResponseImpl.Decode[version](reader);
+        public static ApiVersionsResponse ApiVersionsResponse(int version, ProtocolStreamReader reader) => ApiVersionsResponseImpl.Decode[version](reader);
 
         public static bool Boolean(ProtocolStreamReader reader) => reader.Read(1, Boolean);
         public static bool Boolean(byte[] memory, int offset)
