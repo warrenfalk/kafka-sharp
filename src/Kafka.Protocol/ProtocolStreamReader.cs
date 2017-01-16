@@ -10,7 +10,6 @@ namespace Kafka.Protocol
     {
         Readable Stream { get; }
         byte[] Buffer { get; }
-        int BufferCursor { get; set; }
 
         public ProtocolStreamReader(Readable stream)
         {
@@ -40,34 +39,30 @@ namespace Kafka.Protocol
 
         public T Read<T>(int size, Func<byte[], int, T> decode)
         {
-            WaitFor(size);
-            var value = decode(Buffer, 0);
-            Reset();
+            var buffer = WaitFor(Stream, size, Buffer);
+            var value = decode(buffer, 0);
             return value;
         }
 
         public T Read<T>(int size, Func<byte[], int, int, T> decode)
         {
-            WaitFor(size);
-            var value = decode(Buffer, 0, size);
-            Reset();
+            var buffer = WaitFor(Stream, size, Buffer);
+            var value = decode(buffer, 0, size);
             return value;
         }
 
-        private void WaitFor(int size)
+        private static byte[] WaitFor(Readable stream, int size, byte[] recycled)
         {
-            while (BufferCursor < size)
+            var buffer = (size > recycled.Length) ? new byte[size] : recycled;
+            int cursor = 0;
+            while (cursor < size)
             {
-                int advance = Stream.Read(Buffer, BufferCursor, size - BufferCursor);
+                int advance = stream.Read(buffer, cursor, size - cursor);
                 if (advance == 0)
                     throw new EndOfStreamException();
-                BufferCursor += advance;
+                cursor += advance;
             }
-        }
-
-        private void Reset()
-        {
-            BufferCursor = 0;
+            return buffer;
         }
     }
 }

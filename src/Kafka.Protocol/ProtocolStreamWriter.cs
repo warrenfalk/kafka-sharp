@@ -1,0 +1,54 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace Kafka.Protocol
+{
+    public class ProtocolStreamWriter
+    {
+        Writable Stream { get; }
+        byte[] Buffer { get; }
+
+        public ProtocolStreamWriter(Writable stream)
+        {
+            Stream = stream;
+            Buffer = new byte[512];
+        }
+
+        public ProtocolStreamWriter(Stream stream)
+            : this(stream.AsWritable())
+        { }
+
+        public void WriteList<T>(IEnumerable<T> value, Action<T, ProtocolStreamWriter> encodeFunc) => Encode.List<T>(value, this, encodeFunc);
+
+        public void WriteBoolean(bool value) => Encode.Boolean(value, this);
+
+        public void WriteInt8(sbyte value) => Encode.Int8(value, this);
+
+        public void WriteInt16(short value) => Encode.Int16(value, this);
+
+        public void WriteInt32(int value) => Encode.Int32(value, this);
+
+        public void WriteInt64(long value) => Encode.Int64(value, this);
+
+        public void WriteString(string value) => Encode.String(value, this);
+
+        public void WriteNullableString(string value) => Encode.NullableString(value, this);
+
+        public void Write<T>(T value, int size, Action<T, byte[], int> encode)
+        {
+            var buffer = (size <= Buffer.Length) ? Buffer : new byte[size];
+            encode(value, buffer, 0);
+            Stream.Write(buffer, 0, size);
+        }
+
+        public void Write<T>(T value, int size, Action<T, byte[], int, int> encode)
+        {
+            var buffer = (size <= Buffer.Length) ? Buffer : new byte[size];
+            encode(value, buffer, 0, size);
+            Stream.Write(buffer, 0, size);
+        }
+    }
+}

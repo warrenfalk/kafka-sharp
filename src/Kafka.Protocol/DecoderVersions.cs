@@ -7,16 +7,26 @@ namespace Kafka.Protocol
 {
     public class DecoderVersions<T>
     {
+        public ApiKey ApiKey { get; }
         private Func<ProtocolStreamReader, T>[] ParseFuncs { get; }
 
-        public DecoderVersions(params Func<ProtocolStreamReader, T>[] decodeFuncs)
+        public DecoderVersions(ApiKey apiKey, params Func<ProtocolStreamReader, T>[] decodeFuncs)
         {
+            ApiKey = apiKey;
             ParseFuncs = decodeFuncs;
         }
 
-        public Func<ProtocolStreamReader, T> this[int version] => ParseFuncs[version];
+        public Func<ProtocolStreamReader, T> this[int version]
+        {
+            get
+            {
+                if (ApiKey != ApiKey.None && version < 0 || version >= ParseFuncs.Length)
+                    throw new UnknownApiVersionException((short)version, ApiKey);
+                return ParseFuncs[version];
+            }
+        }
 
-        public T Decode(int version, ProtocolStreamReader reader) => ParseFuncs[version](reader);
+        public T Decode(int version, ProtocolStreamReader reader) => this[version](reader);
 
         public int MaxVersion => ParseFuncs.Length - 1;
     }

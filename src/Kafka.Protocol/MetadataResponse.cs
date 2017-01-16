@@ -7,6 +7,7 @@ namespace Kafka.Protocol
     {
         int Version { get; }
         IEnumerable<BrokerMetadata> Brokers { get; }
+        string ClusterId { get; }
         int ControllerId { get; }
         IEnumerable<TopicMetadata> Topics { get; }
     }
@@ -40,6 +41,7 @@ namespace Kafka.Protocol
     {
         public int Version { get; }
         public IEnumerable<BrokerMetadata> Brokers { get; }
+        public string ClusterId { get; }
         public int ControllerId { get; }
         public IEnumerable<TopicMetadata> Topics { get; }
 
@@ -47,23 +49,33 @@ namespace Kafka.Protocol
             int version,
             IEnumerable<BrokerMetadata> brokers,
             IEnumerable<TopicMetadata> topics,
-            int controllerId = -1)
+            int controllerId = -1,
+            string clusterId = null)
         {
             Version = version;
             Brokers = brokers;
             Topics = topics;
             ControllerId = controllerId;
+            ClusterId = clusterId;
         }
 
         public static DecoderVersions<MetadataResponse> Decode = new DecoderVersions<MetadataResponse>(
+            ApiKey.Metadata,
             reader => new MetadataResponseImpl(
                 version: 0,
                 brokers: reader.ReadList(BrokerMetadataImpl.Versions[0]),
                 topics: reader.ReadList(TopicMetadataImpl.Versions[0])
             ),
             reader => new MetadataResponseImpl(
-                version: 0,
+                version: 1,
                 brokers: reader.ReadList(BrokerMetadataImpl.Versions[1]),
+                controllerId: reader.ReadInt32(),
+                topics: reader.ReadList(TopicMetadataImpl.Versions[1])
+            ),
+            reader => new MetadataResponseImpl(
+                version: 2,
+                brokers: reader.ReadList(BrokerMetadataImpl.Versions[1]),
+                clusterId: reader.ReadNullableString(),
                 controllerId: reader.ReadInt32(),
                 topics: reader.ReadList(TopicMetadataImpl.Versions[1])
             )
@@ -90,6 +102,7 @@ namespace Kafka.Protocol
         }
 
         public static DecoderVersions<BrokerMetadata> Versions = new DecoderVersions<BrokerMetadata>(
+            ApiKey.None,
             reader => new BrokerMetadataImpl(
                 nodeId: reader.ReadInt32(),
                 hostName: reader.ReadString(),
@@ -124,6 +137,7 @@ namespace Kafka.Protocol
         }
 
         public static DecoderVersions<TopicMetadata> Versions = new DecoderVersions<TopicMetadata>(
+            ApiKey.None,
             reader => new TopicMetadataImpl(
                 topicErrorCode: reader.ReadInt16(),
                 topicName: reader.ReadString(),
@@ -162,6 +176,7 @@ namespace Kafka.Protocol
         }
 
         public static DecoderVersions<PartitionMetadata> Versions = new DecoderVersions<PartitionMetadata>(
+            ApiKey.None,
             reader => new PartitionMetadataImpl(
                 partitionErrorCode: reader.ReadInt16(),
                 partitionId: reader.ReadInt32(),
