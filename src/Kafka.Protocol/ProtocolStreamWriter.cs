@@ -21,6 +21,10 @@ namespace Kafka.Protocol
             : this(stream.AsWritable())
         { }
 
+        public void WriteRaw(byte[] buffer, int offset, int length) => Stream.Write(buffer, offset, length);
+
+        public void WriteRaw(byte[] buffer) => Stream.Write(buffer, 0, buffer.Length);
+
         public void WriteList<T>(IEnumerable<T> value, Action<T, ProtocolStreamWriter> encodeFunc) => Encode.List<T>(value, this, encodeFunc);
 
         public void WriteBoolean(bool value) => Encode.Boolean(value, this);
@@ -36,6 +40,8 @@ namespace Kafka.Protocol
         public void WriteString(string value) => Encode.String(value, this);
 
         public void WriteNullableString(string value) => Encode.NullableString(value, this);
+
+        public void WriteMessageSet(MessageSet messageSet) => MessageSet.Encode(messageSet, this);
 
         public void Write<T>(T value, int size, Action<T, byte[], int> encode)
         {

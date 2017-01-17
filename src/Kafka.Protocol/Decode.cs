@@ -8,6 +8,7 @@ namespace Kafka.Protocol
 {
     public static class Decode
     {
+        public static ProduceResponse ProduceResponse(int version, ProtocolStreamReader reader) => ProduceResponseImpl.Decode[version](reader);
         public static MetadataResponse MetadataResponse(int version, ProtocolStreamReader reader) => MetadataResponseImpl.Decode[version](reader);
         public static ApiVersionsResponse ApiVersionsResponse(int version, ProtocolStreamReader reader) => ApiVersionsResponseImpl.Decode[version](reader);
 
