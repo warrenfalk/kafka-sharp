@@ -9,6 +9,8 @@ namespace Kafka.Protocol
     public interface Readable
     {
         int Read(byte[] buffer, int offset, int length);
+        bool IsAtEnd();
+        Readable SubReadable(int size);
     }
 
     public static class ReadableExtension
@@ -24,7 +26,14 @@ namespace Kafka.Protocol
                 wrapped = stream;
             }
 
+            public bool IsAtEnd() => false;
+
             public int Read(byte[] buffer, int offset, int count) => wrapped.Read(buffer, offset, count);
+
+            public Readable SubReadable(int size)
+            {
+                throw new NotImplementedException();
+            }
         }
     }
 }

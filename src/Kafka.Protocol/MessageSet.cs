@@ -23,6 +23,17 @@ namespace Kafka.Protocol
                 MessageImpl.Encode(message, writer);
         }
 
+        public static MessageSet Decode(ProtocolStreamReader reader)
+        {
+            var messageSet = new MessageSet();
+            while (!reader.IsAtEnd())
+            {
+                var message = MessageImpl.Decode(reader);
+                messageSet.Add(message);
+            }
+            return messageSet;
+        }
+
         public IEnumerator<Message> GetEnumerator() => Messages.GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => Messages.GetEnumerator();
@@ -66,6 +77,11 @@ namespace Kafka.Protocol
         {
             Key = new ArraySegment<byte>(key);
             Value = new ArraySegment<byte>(value);
+        }
+
+        public static Message Decode(ProtocolStreamReader reader)
+        {
+            throw new NotImplementedException();
         }
 
         public static void Encode(Message message, ProtocolStreamWriter writer)
