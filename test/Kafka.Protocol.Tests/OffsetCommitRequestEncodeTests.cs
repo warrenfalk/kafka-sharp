@@ -7,7 +7,7 @@ using static Kafka.Protocol.Tests.Helpers;
 
 namespace Kafka.Protocol.Tests
 {
-    public class OffsetCommitRequestEncode
+    public class OffsetCommitRequestEncodeTests
     {
         [Fact]
         public void EncodeOffsetCommitV0()

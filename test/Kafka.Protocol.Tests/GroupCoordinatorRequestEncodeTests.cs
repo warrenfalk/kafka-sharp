@@ -7,7 +7,7 @@ using static Kafka.Protocol.Tests.Helpers;
 
 namespace Kafka.Protocol.Tests
 {
-    public class GroupCoordinatorRequestEncode
+    public class GroupCoordinatorRequestEncodeTests
     {
         [Fact]
         public void EncodeGroupCoordinatorV0()

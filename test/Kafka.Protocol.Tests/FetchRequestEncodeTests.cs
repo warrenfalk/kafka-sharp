@@ -7,7 +7,7 @@ using static Kafka.Protocol.Tests.Helpers;
 
 namespace Kafka.Protocol.Tests
 {
-    public class FetchRequestEncode
+    public class FetchRequestEncodeTests
     {
         [Fact]
         public void EncodeFetchV0()

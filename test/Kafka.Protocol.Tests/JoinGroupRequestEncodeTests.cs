@@ -7,7 +7,7 @@ using static Kafka.Protocol.Tests.Helpers;
 
 namespace Kafka.Protocol.Tests
 {
-    public class JoinGroupRequestEncode
+    public class JoinGroupRequestEncodeTests
     {
         [Fact]
         public void EncodeJoinGroupV0()

@@ -7,7 +7,7 @@ using static Kafka.Protocol.Tests.Helpers;
 
 namespace Kafka.Protocol.Tests
 {
-    public class OffsetFetchRequestEncode
+    public class OffsetFetchRequestEncodeTests
     {
         [Fact]
         public void EncodeOffsetFetchV0()

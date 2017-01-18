@@ -7,7 +7,7 @@ using static Kafka.Protocol.Tests.Helpers;
 
 namespace Kafka.Protocol.Tests
 {
-    public class MetadataRequestEncode
+    public class MetadataRequestEncodeTests
     {
         [Fact]
         public void EncodeMetadataV0()

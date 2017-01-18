@@ -7,7 +7,7 @@ using static Kafka.Protocol.Tests.Helpers;
 
 namespace Kafka.Protocol.Tests
 {
-    public class SyncGroupRequestEncode
+    public class SyncGroupRequestEncodeTests
     {
         [Fact]
         public void EncodeSyncGroupV0()
