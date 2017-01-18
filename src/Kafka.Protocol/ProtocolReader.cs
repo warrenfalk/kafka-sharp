@@ -60,6 +60,8 @@ namespace Kafka.Protocol
             return decodeFunc(sub);
         }
 
+        public T Read<T>(Func<ProtocolReader, T> decodeFunc) => decodeFunc(this);
+
         public T Read<T>(int size, Func<Slice, T> decode)
         {
             T value = decode(Data.Subslice(Offset, size));
