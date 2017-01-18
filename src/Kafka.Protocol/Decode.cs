@@ -12,6 +12,7 @@ namespace Kafka.Protocol
         public static FetchResponse FetchResponse(int version, ProtocolReader reader) => FetchResponseImpl.Decode[version](reader);
         public static OffsetsResponse OffsetsResponse(int version, ProtocolReader reader) => OffsetsResponseImpl.Decode[version](reader);
         public static MetadataResponse MetadataResponse(int version, ProtocolReader reader) => MetadataResponseImpl.Decode[version](reader);
+        public static OffsetCommitResponse OffsetCommitResponse(int version, ProtocolReader reader) => OffsetCommitResponseImpl.Decode[version](reader);
         public static ApiVersionsResponse ApiVersionsResponse(int version, ProtocolReader reader) => ApiVersionsResponseImpl.Decode[version](reader);
 
         public static bool Boolean(this Slice slice) => Boolean(slice.Buffer, slice.Offset);

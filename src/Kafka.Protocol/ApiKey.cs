@@ -7,10 +7,10 @@
         Fetch = 1,
         Offsets = 2,
         Metadata = 3,
-        LeaderAndIsr = 4,
-        StopReplica = 5,
-        UpdateMetadata = 6,
-        ControlledShutdown = 7,
+        LeaderAndIsr = 4, // Non-user-facing
+        StopReplica = 5, // Non-user-facing
+        UpdateMetadata = 6, // Non-user-facing
+        ControlledShutdown = 7, // Non-user-facing
         OffsetCommit = 8,
         OffsetFetch = 9,
         GroupCoordinator = 10,
