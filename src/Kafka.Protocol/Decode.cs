@@ -16,6 +16,7 @@ namespace Kafka.Protocol
         public static OffsetFetchResponse OffsetFetchResponse(int version, ProtocolReader reader) => OffsetFetchResponseImpl.Decode[version](reader);
         public static GroupCoordinatorResponse GroupCoordinatorResponse(int version, ProtocolReader reader) => GroupCoordinatorResponseImpl.Decode[version](reader);
         public static JoinGroupResponse JoinGroupResponse(int version, ProtocolReader reader) => JoinGroupResponseImpl.Decode[version](reader);
+        public static SyncGroupResponse SyncGroupResponse(int version, ProtocolReader reader) => SyncGroupResponseImpl.Decode[version](reader);
         public static ApiVersionsResponse ApiVersionsResponse(int version, ProtocolReader reader) => ApiVersionsResponseImpl.Decode[version](reader);
 
         public static bool Boolean(this Slice slice) => Boolean(slice.Buffer, slice.Offset);
