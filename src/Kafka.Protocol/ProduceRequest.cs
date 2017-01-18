@@ -26,9 +26,10 @@ namespace Kafka.Protocol
                 case 0:
                 case 1:
                 case 2:
-                    writer.WriteInt16(Acks);
-                    writer.WriteInt32(Timeout);
-                    writer.WriteList(TopicData, Protocol.TopicProduce.Encode);
+                    writer
+                        .WriteInt16(Acks)
+                        .WriteInt32(Timeout)
+                        .WriteList(TopicData, Protocol.TopicProduce.Encode);
                     break;
                 default:
                     throw new UnknownApiVersionException(ApiVersion, ApiKey);
@@ -41,11 +42,10 @@ namespace Kafka.Protocol
         public string TopicName { get; set; }
         public List<TopicPartitionProduce> Data { get; } = new List<TopicPartitionProduce>();
 
-        public static void Encode(TopicProduce value, ProtocolWriter writer)
-        {
-            writer.WriteString(value.TopicName);
-            writer.WriteList(value.Data, TopicPartitionProduce.Encode);
-        }
+        public static ProtocolWriter Encode(TopicProduce value, ProtocolWriter writer)
+            => writer
+                .WriteString(value.TopicName)
+                .WriteList(value.Data, TopicPartitionProduce.Encode);
     }
 
     public class TopicPartitionProduce
@@ -53,10 +53,9 @@ namespace Kafka.Protocol
         public int Partition { get; set; }
         public MessageSet MessageSet { get; } = new MessageSet();
 
-        public static void Encode(TopicPartitionProduce value, ProtocolWriter writer)
-        {
-            writer.WriteInt32(value.Partition);
-            writer.WriteMessageSet(value.MessageSet);
-        }
+        public static ProtocolWriter Encode(TopicPartitionProduce value, ProtocolWriter writer)
+            => writer
+                .WriteInt32(value.Partition)
+                .WriteMessageSet(value.MessageSet);
     }
 }

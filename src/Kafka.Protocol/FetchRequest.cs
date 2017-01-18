@@ -50,11 +50,10 @@ namespace Kafka.Protocol
         public string TopicName { get; set; }
         public List<TopicPartitionFetch> Partitions { get; } = new List<TopicPartitionFetch>();
 
-        internal static void Encode(TopicFetch value, ProtocolWriter writer)
-        {
-            writer.WriteString(value.TopicName);
-            writer.WriteList(value.Partitions, TopicPartitionFetch.Encode);
-        }
+        internal static ProtocolWriter Encode(TopicFetch value, ProtocolWriter writer)
+            => writer
+                .WriteString(value.TopicName)
+                .WriteList(value.Partitions, TopicPartitionFetch.Encode);
     }
 
     public class TopicPartitionFetch
@@ -63,11 +62,10 @@ namespace Kafka.Protocol
         public long FetchOffset { get; set; }
         public int MaxBytes { get; set; }
 
-        internal static void Encode(TopicPartitionFetch value, ProtocolWriter writer)
-        {
-            writer.WriteInt32(value.Partition);
-            writer.WriteInt64(value.FetchOffset);
-            writer.WriteInt32(value.MaxBytes);
-        }
+        internal static ProtocolWriter Encode(TopicPartitionFetch value, ProtocolWriter writer)
+            => writer
+                .WriteInt32(value.Partition)
+                .WriteInt64(value.FetchOffset)
+                .WriteInt32(value.MaxBytes);
     }
 }

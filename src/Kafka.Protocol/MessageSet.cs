@@ -13,7 +13,7 @@ namespace Kafka.Protocol
     {
         private List<Message> Messages { get; } = new List<Message>();
 
-        public static void Encode(MessageSet set, ProtocolWriter writer)
+        public static ProtocolWriter Encode(MessageSet set, ProtocolWriter writer)
         {
             int size = 0;
             foreach (var message in set.Messages)
@@ -21,6 +21,7 @@ namespace Kafka.Protocol
             writer.WriteInt32(size);
             foreach (var message in set.Messages)
                 MessageImpl.Encode(message, writer);
+            return writer;
         }
 
         public static IEnumerable<Message> Decode(ProtocolReader reader)

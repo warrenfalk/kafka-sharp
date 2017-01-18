@@ -8,10 +8,11 @@ namespace Kafka.Protocol
 {
     /// <summary>
     /// The purpose of this structure is to be able to pass around raw data without copying it to multiple smaller buffers
-    /// This is not technically an immutable structure, because direct access to the buffer allows slices to change data outside their own range
-    /// Prevention of that requires another immutable class on top of slice
-    /// But such a class really has to be custom-written because it will be the only thing that can read from the buffer and so it must have knowledge of the protocol
-    /// A crude immutable can be written which can simply copy segments out to other buffers, but this is an extra copy step in most cases
+    /// This is designed to be mostly* immutable.
+    /// * This is not technically an immutable structure, because direct access to the buffer allows slices to change data outside their own range
+    ///   Prevention of that requires another immutable class on top of slice.
+    ///   But such a class really has to be custom-written because it will be the only thing that can read from the buffer and so it must have knowledge of the protocol
+    ///   A crude immutable can be written which can simply copy segments out to other buffers, but this is an extra copy step in most cases
     /// </summary>
     public struct Slice
     {

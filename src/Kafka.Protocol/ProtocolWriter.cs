@@ -21,42 +21,48 @@ namespace Kafka.Protocol
             : this(stream.AsWritable())
         { }
 
-        public void WriteRaw(Slice slice) => Stream.Write(slice.Buffer, slice.Offset, slice.Length);
+        public ProtocolWriter WriteRaw(Slice slice) => WriteRaw(slice.Buffer, slice.Offset, slice.Length);
 
-        public void WriteRaw(byte[] buffer, int offset, int length) => Stream.Write(buffer, offset, length);
+        public ProtocolWriter WriteRaw(byte[] buffer, int offset, int length)
+        {
+            Stream.Write(buffer, offset, length);
+            return this;
+        }
 
-        public void WriteRaw(byte[] buffer) => Stream.Write(buffer, 0, buffer.Length);
+        public ProtocolWriter WriteRaw(byte[] buffer) => WriteRaw(buffer, 0, buffer.Length);
 
-        public void WriteList<T>(IEnumerable<T> value, Action<T, ProtocolWriter> encodeFunc) => Encode.List<T>(value, this, encodeFunc);
+        public ProtocolWriter WriteList<T>(IEnumerable<T> value, Func<T, ProtocolWriter, ProtocolWriter> encodeFunc) => Encode.List<T>(value, this, encodeFunc);
 
-        public void WriteBoolean(bool value) => Encode.Boolean(value, this);
+        public ProtocolWriter WriteBoolean(bool value) => Encode.Boolean(value, this);
 
-        public void WriteInt8(sbyte value) => Encode.Int8(value, this);
+        public ProtocolWriter WriteInt8(sbyte value) => Encode.Int8(value, this);
 
-        public void WriteInt16(short value) => Encode.Int16(value, this);
+        public ProtocolWriter WriteInt16(short value) => Encode.Int16(value, this);
 
-        public void WriteInt32(int value) => Encode.Int32(value, this);
+        public ProtocolWriter WriteInt32(int value) => Encode.Int32(value, this);
 
-        public void WriteInt64(long value) => Encode.Int64(value, this);
+        public ProtocolWriter WriteInt64(long value) => Encode.Int64(value, this);
 
-        public void WriteString(string value) => Encode.String(value, this);
+        public ProtocolWriter WriteString(string value) => Encode.String(value, this);
 
-        public void WriteNullableString(string value) => Encode.NullableString(value, this);
+        public ProtocolWriter WriteNullableString(string value) => Encode.String(value, this);
 
-        public void WriteMessageSet(MessageSet messageSet) => MessageSet.Encode(messageSet, this);
+        public ProtocolWriter WriteMessageSet(MessageSet messageSet) => MessageSet.Encode(messageSet, this);
 
-        public void Write<T>(T value, int size, Action<T, byte[], int> encode)
+        public ProtocolWriter Write<T>(T value, int size, Action<T, byte[], int> encode)
         {
             var buffer = (size <= Buffer.Length) ? Buffer : new byte[size];
             encode(value, buffer, 0);
             Stream.Write(buffer, 0, size);
+            return this;
         }
 
-        public void Write<T>(T value, int size, Action<T, byte[], int, int> encode)
+        public ProtocolWriter Write<T>(T value, int size, Action<T, byte[], int, int> encode)
         {
             var buffer = (size <= Buffer.Length) ? Buffer : new byte[size];
             encode(value, buffer, 0, size);
             Stream.Write(buffer, 0, size);
+            return this;
         }
     }
 }

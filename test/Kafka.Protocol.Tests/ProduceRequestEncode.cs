@@ -7,7 +7,7 @@ using static Kafka.Protocol.Tests.Helpers;
 
 namespace Kafka.Protocol.Tests
 {
-    public class ProduceEncode
+    public class ProduceRequestEncode
     {
         [Fact]
         public void EncodeProduceV0()

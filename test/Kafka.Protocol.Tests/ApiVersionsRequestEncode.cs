@@ -7,7 +7,7 @@ using static Kafka.Protocol.Tests.Helpers;
 
 namespace Kafka.Protocol.Tests
 {
-    public class ApiVersionsEncode
+    public class ApiVersionsRequestEncode
     {
         [Fact]
         public void EncodeApiVersionsV0()

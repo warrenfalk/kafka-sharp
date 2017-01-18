@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace Kafka.Protocol
 {
+    /// <summary>
+    /// Represents a binary value with convenience methods for conversion to/from strings and byte arrays, etc.
+    /// </summary>
     public sealed class BinaryValue
     {
         public Slice Slice { get; }
@@ -28,7 +31,9 @@ namespace Kafka.Protocol
         {
         }
 
-        public override string ToString() => Encoding.UTF8.GetString(Slice.Buffer, Slice.Offset, Slice.Length);
+        public override string ToString() => ToString(Encoding.UTF8);
+
+        public string ToString(Encoding encoding) => encoding.GetString(Slice.Buffer, Slice.Offset, Slice.Length);
 
         public Stream GetStream() => Slice.GetStream();
 
