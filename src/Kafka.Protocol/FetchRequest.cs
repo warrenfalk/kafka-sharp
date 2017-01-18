@@ -20,7 +20,7 @@ namespace Kafka.Protocol
             ApiVersion = apiVersion;
         }
 
-        public void WriteTo(ProtocolStreamWriter writer)
+        public void WriteTo(ProtocolWriter writer)
         {
             switch (ApiVersion)
             {
@@ -50,7 +50,7 @@ namespace Kafka.Protocol
         public string TopicName { get; set; }
         public List<TopicPartitionFetch> Partitions { get; } = new List<TopicPartitionFetch>();
 
-        internal static void Encode(TopicFetch value, ProtocolStreamWriter writer)
+        internal static void Encode(TopicFetch value, ProtocolWriter writer)
         {
             writer.WriteString(value.TopicName);
             writer.WriteList(value.Partitions, TopicPartitionFetch.Encode);
@@ -63,7 +63,7 @@ namespace Kafka.Protocol
         public long FetchOffset { get; set; }
         public int MaxBytes { get; set; }
 
-        internal static void Encode(TopicPartitionFetch value, ProtocolStreamWriter writer)
+        internal static void Encode(TopicPartitionFetch value, ProtocolWriter writer)
         {
             writer.WriteInt32(value.Partition);
             writer.WriteInt64(value.FetchOffset);

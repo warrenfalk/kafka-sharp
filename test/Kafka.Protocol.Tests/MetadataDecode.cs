@@ -13,8 +13,7 @@ namespace Kafka.Protocol.Tests
         public void DecodeMetadataV0() 
         {
             var binary = FromHex("0000006f000000010000000100000000000e77617272656e2d6465736b746f7000002384000000020000000352656400000001000000000000000000000000000100000000000000010000000000000004426c7565000000010000000000000000000000000001000000000000000100000000");
-            var stream = new MemoryStream(binary);
-            var pstream = new ProtocolStreamReader(stream);
+            var pstream = new ProtocolReader(new Slice(binary));
 
             int size = pstream.ReadInt32();
             int correlationId = pstream.ReadInt32();
@@ -72,8 +71,7 @@ namespace Kafka.Protocol.Tests
         public void DecodeMetadataV1()
         {
             var binary = FromHex("00000077000000010000000100000000000e77617272656e2d6465736b746f7000002384ffff0000000000000002000000035265640000000001000000000000000000000000000100000000000000010000000000000004426c756500000000010000000000000000000000000001000000000000000100000000");
-            var stream = new MemoryStream(binary);
-            var pstream = new ProtocolStreamReader(stream);
+            var pstream = new ProtocolReader(new Slice(binary));
 
             int size = pstream.ReadInt32();
             int correlationId = pstream.ReadInt32();
@@ -131,8 +129,7 @@ namespace Kafka.Protocol.Tests
         public void DecodeMetadataV2()
         {
             var binary = FromHex("0000008f000000010000000100000000000e77617272656e2d6465736b746f7000002384ffff00164553565f42776b615153326e7956776f51586d4553670000000000000002000000035265640000000001000000000000000000000000000100000000000000010000000000000004426c756500000000010000000000000000000000000001000000000000000100000000");
-            var stream = new MemoryStream(binary);
-            var pstream = new ProtocolStreamReader(stream);
+            var pstream = new ProtocolReader(new Slice(binary));
 
             int size = pstream.ReadInt32();
             int correlationId = pstream.ReadInt32();
@@ -191,8 +188,7 @@ namespace Kafka.Protocol.Tests
         public void DecodeMetadataBadVersion()
         {
             var binary = FromHex("0000008f000000010000000100000000000e77617272656e2d6465736b746f7000002384ffff00164553565f42776b615153326e7956776f51586d4553670000000000000002000000035265640000000001000000000000000000000000000100000000000000010000000000000004426c756500000000010000000000000000000000000001000000000000000100000000");
-            var stream = new MemoryStream(binary);
-            var pstream = new ProtocolStreamReader(stream);
+            var pstream = new ProtocolReader(new Slice(binary));
 
             int size = pstream.ReadInt32();
             int correlationId = pstream.ReadInt32();

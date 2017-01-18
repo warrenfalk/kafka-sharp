@@ -11,9 +11,9 @@ namespace Kafka.Protocol
 {
     public class MessageSet : IEnumerable<Message>
     {
-        public List<Message> Messages { get; } = new List<Message>();
+        private List<Message> Messages { get; } = new List<Message>();
 
-        public static void Encode(MessageSet set, ProtocolStreamWriter writer)
+        public static void Encode(MessageSet set, ProtocolWriter writer)
         {
             int size = 0;
             foreach (var message in set.Messages)
@@ -23,12 +23,14 @@ namespace Kafka.Protocol
                 MessageImpl.Encode(message, writer);
         }
 
-        public static MessageSet Decode(ProtocolStreamReader reader)
+        public static IEnumerable<Message> Decode(ProtocolReader reader)
         {
             var messageSet = new MessageSet();
-            while (!reader.IsAtEnd())
+            for(;;)
             {
                 var message = MessageImpl.Decode(reader);
+                if (message == null)
+                    break;
                 messageSet.Add(message);
             }
             return messageSet;
@@ -51,8 +53,8 @@ namespace Kafka.Protocol
         sbyte Version { get; } // aka MagicByte
         Compression Compression { get; }
         long Timestamp { get; }
-        ArraySegment<byte> Key { get; }
-        ArraySegment<byte> Value { get; }
+        BinaryValue Key { get; }
+        BinaryValue Value { get; }
     }
 
     public class MessageImpl : Message
@@ -61,8 +63,8 @@ namespace Kafka.Protocol
         public sbyte Version { get; set; } = 0;
         public Compression Compression { get; set; }
         public long Timestamp { get; set; }
-        public ArraySegment<byte> Key { get; set; }
-        public ArraySegment<byte> Value { get; set; }
+        public BinaryValue Key { get; set; }
+        public BinaryValue Value { get; set; }
 
         public MessageImpl()
         { }
@@ -79,12 +81,50 @@ namespace Kafka.Protocol
             Value = new ArraySegment<byte>(value);
         }
 
-        public static Message Decode(ProtocolStreamReader reader)
+        public static Message Decode(ProtocolReader reader)
         {
-            throw new NotImplementedException();
+            // The decoding of Messages is implemented in a way which is peculiar compared to other decode
+            // functions because messages are decoded from a stream which may end abruptly in the middle
+            // of a message, and so we need to hande that.
+            // We handle that with the ReadRaw() method which can return a slice smaller than we ask for
+            
+            // need 12 bytes for a message header
+            var header = reader.ReadRaw(12);
+            if (header.Length < 12)
+                return null; // the entire message is not available
+            var offset = Protocol.Decode.Int64(header);
+            var size = Protocol.Decode.Int32(header.At(8));
+
+            // that gives us the size, so now we try to read that size
+            var subd = reader.ReadRaw(size);
+            if (subd.Length < size)
+                return null; // the entire message is not available
+
+            reader = new ProtocolReader(subd);
+            var crc = reader.ReadInt32();
+            var magic = reader.ReadInt8();
+            var attributes = reader.ReadInt8();
+            if (attributes != 0)
+                throw new NotImplementedException("TODO: implement compression in MessageImpl.Decode()");
+            var timestamp = (magic >= 1)
+                ? reader.ReadInt64()
+                : -1;
+            var keySize = reader.ReadInt32();
+            var key = keySize < 0 ? null : new BinaryValue(reader.ReadRaw(keySize));
+            var valueSize = reader.ReadInt32();
+            var value = valueSize < 0 ? null : new BinaryValue(reader.ReadRaw(valueSize));
+            return new MessageImpl
+            {
+                Offset = offset,
+                Version = magic,
+                Compression = Compression.None,
+                Timestamp = timestamp,
+                Key = key,
+                Value = value,
+            };
         }
 
-        public static void Encode(Message message, ProtocolStreamWriter writer)
+        public static void Encode(Message message, ProtocolWriter writer)
         {
             // This is a little bit complicated because the protocol inconveniently requires us to send the CRC of the data before the data itself
             // So we have to first encode everything that needs to be encoded to some buffers
@@ -93,8 +133,8 @@ namespace Kafka.Protocol
 
             var key = message.Key;
             var value = message.Value;
-            var haveKey = key.Count > 0;
-            var haveValue = value.Count > 0;
+            var haveKey = key != null;
+            var haveValue = value != null;
             var version = message.Version;
             var headerSize = CalcHeaderSize(message);
             var attributes = (sbyte)message.Compression;
@@ -110,28 +150,28 @@ namespace Kafka.Protocol
                 Protocol.Encode.Int64(message.Timestamp, headerBytes, 2);
 
             var keySize = new byte[4];
-            Protocol.Encode.Int32(key.Count, keySize, 0);
+            Protocol.Encode.Int32(key?.Length ?? -1, keySize, 0);
             var valueSize = new byte[4];
-            Protocol.Encode.Int32(value.Count, valueSize, 0);
+            Protocol.Encode.Int32(value?.Length ?? -1, valueSize, 0);
 
             // Now calculate the CRC
             var crc32 = (uint)0;
             crc32 = Crc32Algorithm.Append(crc32, headerBytes);
             crc32 = Crc32Algorithm.Append(crc32, keySize);
             if (haveKey)
-                crc32 = Crc32Algorithm.Append(crc32, key.Array, key.Offset, key.Count);
+                crc32 = Crc32Algorithm.Append(crc32, key.Slice.Buffer, key.Slice.Offset, key.Slice.Length);
             crc32 = Crc32Algorithm.Append(crc32, valueSize);
             if (haveValue)
-                crc32 = Crc32Algorithm.Append(crc32, value.Array, value.Offset, value.Count);
+                crc32 = Crc32Algorithm.Append(crc32, value.Slice.Buffer, value.Slice.Offset, value.Slice.Length);
 
             writer.WriteInt32((int)crc32);
             writer.WriteRaw(headerBytes);
             writer.WriteRaw(keySize);
             if (haveKey)
-                writer.WriteRaw(key.Array, key.Offset, key.Count);
+                writer.WriteRaw(key.Slice);
             writer.WriteRaw(valueSize);
             if (haveValue)
-                writer.WriteRaw(value.Array, value.Offset, value.Count);
+                writer.WriteRaw(value.Slice);
         }
 
         public const int FixedEntrySize = 8 /* Offset */ + 4 /* Message Size */;
@@ -143,7 +183,7 @@ namespace Kafka.Protocol
         {
             var key = message.Key;
             var value = message.Value;
-            return FixedMessageSize + CalcHeaderSize(message) + key.Count + value.Count;
+            return FixedMessageSize + CalcHeaderSize(message) + (key?.Length ?? -1) + (value?.Length ?? -1);
         }
 
         public static int CalcEntrySize(Message message)

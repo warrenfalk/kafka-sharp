@@ -16,7 +16,7 @@ namespace Kafka.Protocol
             ApiVersion = apiVersion;
         }
 
-        public void WriteTo(ProtocolStreamWriter writer)
+        public void WriteTo(ProtocolWriter writer)
         {
             switch (ApiVersion)
             {

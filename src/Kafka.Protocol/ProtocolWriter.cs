@@ -6,26 +6,28 @@ using System.Threading.Tasks;
 
 namespace Kafka.Protocol
 {
-    public class ProtocolStreamWriter
+    public class ProtocolWriter
     {
         Writable Stream { get; }
         byte[] Buffer { get; }
 
-        public ProtocolStreamWriter(Writable stream)
+        public ProtocolWriter(Writable stream)
         {
             Stream = stream;
             Buffer = new byte[512];
         }
 
-        public ProtocolStreamWriter(Stream stream)
+        public ProtocolWriter(Stream stream)
             : this(stream.AsWritable())
         { }
+
+        public void WriteRaw(Slice slice) => Stream.Write(slice.Buffer, slice.Offset, slice.Length);
 
         public void WriteRaw(byte[] buffer, int offset, int length) => Stream.Write(buffer, offset, length);
 
         public void WriteRaw(byte[] buffer) => Stream.Write(buffer, 0, buffer.Length);
 
-        public void WriteList<T>(IEnumerable<T> value, Action<T, ProtocolStreamWriter> encodeFunc) => Encode.List<T>(value, this, encodeFunc);
+        public void WriteList<T>(IEnumerable<T> value, Action<T, ProtocolWriter> encodeFunc) => Encode.List<T>(value, this, encodeFunc);
 
         public void WriteBoolean(bool value) => Encode.Boolean(value, this);
 

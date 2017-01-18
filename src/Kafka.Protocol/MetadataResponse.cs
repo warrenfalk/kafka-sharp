@@ -181,8 +181,8 @@ namespace Kafka.Protocol
                 partitionErrorCode: reader.ReadInt16(),
                 partitionId: reader.ReadInt32(),
                 leader: reader.ReadInt32(),
-                replicas: reader.ReadList(Protocol.Decode.Int32),
-                isr: reader.ReadList(Protocol.Decode.Int32)
+                replicas: reader.ReadList(r => r.ReadInt32()),
+                isr: reader.ReadList(r => r.ReadInt32())
             )
         );
     }

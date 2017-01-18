@@ -13,8 +13,7 @@ namespace Kafka.Protocol.Tests
         public void DecodeProduceV0() 
         {
             var binary = FromHex("0000001f00000001000000010003526564000000010000000000000000000000000000");
-            var stream = new MemoryStream(binary);
-            var pstream = new ProtocolStreamReader(stream);
+            var pstream = new ProtocolReader(new Slice(binary));
 
             int size = pstream.ReadInt32();
             int correlationId = pstream.ReadInt32();
@@ -43,8 +42,7 @@ namespace Kafka.Protocol.Tests
         public void DecodeProduceV1()
         {
             var binary = FromHex("000000230000000100000001000352656400000001000000000000000000000000000400000000");
-            var stream = new MemoryStream(binary);
-            var pstream = new ProtocolStreamReader(stream);
+            var pstream = new ProtocolReader(new Slice(binary));
 
             int size = pstream.ReadInt32();
             int correlationId = pstream.ReadInt32();
@@ -73,8 +71,7 @@ namespace Kafka.Protocol.Tests
         public void DecodeProduceV2()
         {
             var binary = FromHex("0000002b00000001000000010003526564000000010000000000000000000000000008ffffffffffffffff00000000");
-            var stream = new MemoryStream(binary);
-            var pstream = new ProtocolStreamReader(stream);
+            var pstream = new ProtocolReader(new Slice(binary));
 
             int size = pstream.ReadInt32();
             int correlationId = pstream.ReadInt32();
@@ -104,8 +101,7 @@ namespace Kafka.Protocol.Tests
         public void DecodeProduceBadVersion()
         {
             var binary = FromHex("0000002b00000001000000010003526564000000010000000000000000000000000008ffffffffffffffff00000000");
-            var stream = new MemoryStream(binary);
-            var pstream = new ProtocolStreamReader(stream);
+            var pstream = new ProtocolReader(new Slice(binary));
 
             int size = pstream.ReadInt32();
             int correlationId = pstream.ReadInt32();

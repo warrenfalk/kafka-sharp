@@ -9,6 +9,6 @@ namespace Kafka.Protocol
     {
         ApiKey ApiKey { get; }
         short ApiVersion { get; }
-        void WriteTo(ProtocolStreamWriter writer);
+        void WriteTo(ProtocolWriter writer);
     }
 }

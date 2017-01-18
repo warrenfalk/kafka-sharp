@@ -8,24 +8,24 @@ namespace Kafka.Protocol
 {
     public static class Decode
     {
-        public static ProduceResponse ProduceResponse(int version, ProtocolStreamReader reader) => ProduceResponseImpl.Decode[version](reader);
-        public static FetchResponse FetchResponse(int version, ProtocolStreamReader reader) => FetchResponseImpl.Decode[version](reader);
-        public static MetadataResponse MetadataResponse(int version, ProtocolStreamReader reader) => MetadataResponseImpl.Decode[version](reader);
-        public static ApiVersionsResponse ApiVersionsResponse(int version, ProtocolStreamReader reader) => ApiVersionsResponseImpl.Decode[version](reader);
+        public static ProduceResponse ProduceResponse(int version, ProtocolReader reader) => ProduceResponseImpl.Decode[version](reader);
+        public static FetchResponse FetchResponse(int version, ProtocolReader reader) => FetchResponseImpl.Decode[version](reader);
+        public static MetadataResponse MetadataResponse(int version, ProtocolReader reader) => MetadataResponseImpl.Decode[version](reader);
+        public static ApiVersionsResponse ApiVersionsResponse(int version, ProtocolReader reader) => ApiVersionsResponseImpl.Decode[version](reader);
 
-        public static bool Boolean(ProtocolStreamReader reader) => reader.Read(1, Boolean);
+        public static bool Boolean(this Slice slice) => Boolean(slice.Buffer, slice.Offset);
         public static bool Boolean(byte[] memory, int offset)
         {
             return memory[offset] != 0;
         }
 
-        public static sbyte Int8(ProtocolStreamReader reader) => reader.Read(1, Int8);
+        public static sbyte Int8(this Slice slice) => Int8(slice.Buffer, slice.Offset);
         public static sbyte Int8(byte[] memory, int offset)
         {
             return (sbyte)memory[offset];
         }
 
-        public static short Int16(ProtocolStreamReader reader) => reader.Read(2, Int16);
+        public static short Int16(this Slice slice) => Int16(slice.Buffer, slice.Offset);
         public static short Int16(byte[] memory, int offset)
         {
             return (short)
@@ -34,7 +34,7 @@ namespace Kafka.Protocol
                 );
         }
 
-        public static int Int32(ProtocolStreamReader reader) => reader.Read(4, Int32);
+        public static int Int32(this Slice slice) => Int32(slice.Buffer, slice.Offset);
         public static int Int32(byte[] memory, int offset)
         {
             return (int)
@@ -45,7 +45,7 @@ namespace Kafka.Protocol
                 );
         }
 
-        public static long Int64(ProtocolStreamReader reader) => reader.Read(8, Int64);
+        public static long Int64(this Slice slice) => Int64(slice.Buffer, slice.Offset);
         public static long Int64(byte[] memory, int offset)
         {
             return (long)
@@ -60,25 +60,10 @@ namespace Kafka.Protocol
                 );
         }
 
-        public static string String(ProtocolStreamReader reader) => reader.Read(reader.ReadInt16(), StringChars);
+        public static string StringChars(this Slice slice) => StringChars(slice.Buffer, slice.Offset, slice.Length);
         public static string StringChars(byte[] memory, int offset, int length)
         {
-            return Encoding.UTF8.GetString(memory, (int)offset, (int)length);
-        }
-
-        public static string NullableString(ProtocolStreamReader reader)
-        {
-            int length = reader.ReadInt16();
-            return length < 0 ? null : reader.Read(length, StringChars);
-        }
-
-        public static IEnumerable<T> List<T>(ProtocolStreamReader reader, Func<ProtocolStreamReader, T> decodeFunc)
-        {
-            var count = reader.ReadInt32();
-            T[] items = new T[count];
-            for (var i = 0; i < count; i++)
-                items[i] = decodeFunc(reader);
-            return items;
+            return Encoding.UTF8.GetString(memory, offset, length);
         }
     }
 }

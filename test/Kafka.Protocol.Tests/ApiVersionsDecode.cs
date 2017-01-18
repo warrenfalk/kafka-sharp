@@ -13,8 +13,7 @@ namespace Kafka.Protocol.Tests
         public void DecodeApiVersionsV0() 
         {
             var binary = FromHex("0000008800000001000000000015000000000002000100000003000200000001000300000002000400000000000500000000000600000002000700010001000800000002000900000001000a00000000000b00000001000c00000000000d00000000000e00000000000f00000000001000000000001100000000001200000000001300000000001400000000");
-            var stream = new MemoryStream(binary);
-            var pstream = new ProtocolStreamReader(stream);
+            var pstream = new ProtocolReader(new Slice(binary));
 
             int size = pstream.ReadInt32();
             int correlationId = pstream.ReadInt32();
@@ -115,8 +114,7 @@ namespace Kafka.Protocol.Tests
         public void DecodeApiVersionsBadVersion()
         {
             var binary = FromHex("0000008800000001000000000015000000000002000100000003000200000001000300000002000400000000000500000000000600000002000700010001000800000002000900000001000a00000000000b00000001000c00000000000d00000000000e00000000000f00000000001000000000001100000000001200000000001300000000001400000000");
-            var stream = new MemoryStream(binary);
-            var pstream = new ProtocolStreamReader(stream);
+            var pstream = new ProtocolReader(new Slice(binary));
 
             int size = pstream.ReadInt32();
             int correlationId = pstream.ReadInt32();

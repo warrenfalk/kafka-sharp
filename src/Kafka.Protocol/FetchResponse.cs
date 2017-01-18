@@ -21,7 +21,7 @@ namespace Kafka.Protocol
         int Partition { get; }
         short ErrorCode { get; }
         long HighWatermark { get; }
-        MessageSet MessageSet { get; }
+        IEnumerable<Message> MessageSet { get; }
     }
 
     class FetchResponseImpl : FetchResponse
@@ -48,18 +48,18 @@ namespace Kafka.Protocol
             ),
             reader => new FetchResponseImpl(
                 version: 1,
-                topics: reader.ReadList(TopicFetchResponseImpl.Versions[0]),
-                throttleTimeMs: reader.ReadInt32()
+                throttleTimeMs: reader.ReadInt32(),
+                topics: reader.ReadList(TopicFetchResponseImpl.Versions[0])
             ),
             reader => new FetchResponseImpl(
                 version: 2,
-                topics: reader.ReadList(TopicFetchResponseImpl.Versions[0]),
-                throttleTimeMs: reader.ReadInt32()
+                throttleTimeMs: reader.ReadInt32(),
+                topics: reader.ReadList(TopicFetchResponseImpl.Versions[0])
             ),
             reader => new FetchResponseImpl(
                 version: 3,
-                topics: reader.ReadList(TopicFetchResponseImpl.Versions[0]),
-                throttleTimeMs: reader.ReadInt32()
+                throttleTimeMs: reader.ReadInt32(),
+                topics: reader.ReadList(TopicFetchResponseImpl.Versions[0])
             )
         );
     }
@@ -91,13 +91,13 @@ namespace Kafka.Protocol
         public int Partition { get; }
         public short ErrorCode { get; }
         public long HighWatermark { get; }
-        public MessageSet MessageSet { get; }
+        public IEnumerable<Message> MessageSet { get; } = new MessageSet();
 
         public PartitionFetchResponseImpl(
             int partition,
             short errorCode,
             long highWatermark,
-            MessageSet messageSet)
+            IEnumerable<Message> messageSet)
         {
             Partition = partition;
             ErrorCode = errorCode;
@@ -111,7 +111,7 @@ namespace Kafka.Protocol
                 partition: reader.ReadInt32(),
                 errorCode: reader.ReadInt16(),
                 highWatermark: reader.ReadInt64(),
-                messageSet: reader.SubRead(reader.ReadInt32(), Protocol.MessageSet.Decode)
+                messageSet: reader.Read(reader.ReadInt32(), Protocol.MessageSet.Decode)
             )
         );
     }

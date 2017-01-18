@@ -8,26 +8,26 @@ namespace Kafka.Protocol
 {
     public static class Encode
     {
-        public static void Boolean(bool value, ProtocolStreamWriter writer) => writer.Write(value, 1, Boolean);
+        public static void Boolean(bool value, ProtocolWriter writer) => writer.Write(value, 1, Boolean);
         public static void Boolean(bool value, byte[] memory, int offset)
         {
             memory[offset] = value ? (byte)1 : (byte)0;
         }
 
-        public static void Int8(sbyte value, ProtocolStreamWriter writer) => writer.Write(value, 1, Int8);
+        public static void Int8(sbyte value, ProtocolWriter writer) => writer.Write(value, 1, Int8);
         public static void Int8(sbyte value, byte[] memory, int offset)
         {
             memory[offset] = (byte)value;
         }
 
-        public static void Int16(short value, ProtocolStreamWriter writer) => writer.Write(value, 2, Int16);
+        public static void Int16(short value, ProtocolWriter writer) => writer.Write(value, 2, Int16);
         public static void Int16(short value, byte[] memory, int offset)
         {
             memory[0] = (byte)(value >> 0x8 & 0xFF);
             memory[1] = (byte)(value & 0xFF);
         }
 
-        public static void Int32(int value, ProtocolStreamWriter writer) => writer.Write(value, 4, Int32);
+        public static void Int32(int value, ProtocolWriter writer) => writer.Write(value, 4, Int32);
         public static void Int32(int value, byte[] memory, int offset)
         {
             memory[0] = (byte)(value >> 0x18 & 0xFF);
@@ -37,7 +37,7 @@ namespace Kafka.Protocol
         }
 
 
-        public static void Int64(long value, ProtocolStreamWriter writer) => writer.Write(value, 8, Int64);
+        public static void Int64(long value, ProtocolWriter writer) => writer.Write(value, 8, Int64);
         public static void Int64(long value, byte[] memory, int offset)
         {
             memory[0] = (byte)(value >> 0x38 & 0xFF);
@@ -50,7 +50,7 @@ namespace Kafka.Protocol
             memory[7] = (byte)(value & 0xFF);
         }
 
-        public static void String(string value, ProtocolStreamWriter writer) => writer.Write(value, 2 + Encoding.UTF8.GetByteCount(value), String);
+        public static void String(string value, ProtocolWriter writer) => writer.Write(value, 2 + Encoding.UTF8.GetByteCount(value), String);
         public static void String(string value, byte[] memory, int offset, int size)
         {
             Int16((short)(size - 2), memory, offset);
@@ -61,7 +61,7 @@ namespace Kafka.Protocol
             Encoding.UTF8.GetBytes(value, 0, value.Length, memory, offset);
         }
 
-        public static void NullableString(string value, ProtocolStreamWriter writer)
+        public static void NullableString(string value, ProtocolWriter writer)
         {
             if (value == null)
                 writer.WriteInt16(-1);
@@ -69,7 +69,7 @@ namespace Kafka.Protocol
                 String(value, writer);
         }
 
-        public static void List<T>(IEnumerable<T> value, ProtocolStreamWriter writer, Action<T, ProtocolStreamWriter> encodeFunc)
+        public static void List<T>(IEnumerable<T> value, ProtocolWriter writer, Action<T, ProtocolWriter> encodeFunc)
         {
             var count = value.Count();
             writer.WriteInt32(count);

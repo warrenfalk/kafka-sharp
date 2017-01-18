@@ -8,15 +8,15 @@ namespace Kafka.Protocol
     public class DecoderVersions<T>
     {
         public ApiKey ApiKey { get; }
-        private Func<ProtocolStreamReader, T>[] ParseFuncs { get; }
+        private Func<ProtocolReader, T>[] ParseFuncs { get; }
 
-        public DecoderVersions(ApiKey apiKey, params Func<ProtocolStreamReader, T>[] decodeFuncs)
+        public DecoderVersions(ApiKey apiKey, params Func<ProtocolReader, T>[] decodeFuncs)
         {
             ApiKey = apiKey;
             ParseFuncs = decodeFuncs;
         }
 
-        public Func<ProtocolStreamReader, T> this[int version]
+        public Func<ProtocolReader, T> this[int version]
         {
             get
             {
@@ -26,7 +26,7 @@ namespace Kafka.Protocol
             }
         }
 
-        public T Decode(int version, ProtocolStreamReader reader) => this[version](reader);
+        public T Decode(int version, ProtocolReader reader) => this[version](reader);
 
         public int MaxVersion => ParseFuncs.Length - 1;
     }

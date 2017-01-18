@@ -19,7 +19,7 @@ namespace Kafka.Protocol
             ApiVersion = apiVersion;
         }
 
-        public void WriteTo(ProtocolStreamWriter writer)
+        public void WriteTo(ProtocolWriter writer)
         {
             switch (ApiVersion)
             {
@@ -41,7 +41,7 @@ namespace Kafka.Protocol
         public string TopicName { get; set; }
         public List<TopicPartitionProduce> Data { get; } = new List<TopicPartitionProduce>();
 
-        public static void Encode(TopicProduce value, ProtocolStreamWriter writer)
+        public static void Encode(TopicProduce value, ProtocolWriter writer)
         {
             writer.WriteString(value.TopicName);
             writer.WriteList(value.Data, TopicPartitionProduce.Encode);
@@ -53,7 +53,7 @@ namespace Kafka.Protocol
         public int Partition { get; set; }
         public MessageSet MessageSet { get; } = new MessageSet();
 
-        public static void Encode(TopicPartitionProduce value, ProtocolStreamWriter writer)
+        public static void Encode(TopicPartitionProduce value, ProtocolWriter writer)
         {
             writer.WriteInt32(value.Partition);
             writer.WriteMessageSet(value.MessageSet);

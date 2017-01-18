@@ -20,7 +20,7 @@ namespace Kafka.Protocol
         {
             Buffer.Clear();
 
-            var innerWriter = new ProtocolStreamWriter(Buffer);
+            var innerWriter = new ProtocolWriter(Buffer);
             innerWriter.WriteInt16((short)request.ApiKey);
             innerWriter.WriteInt16(request.ApiVersion);
             innerWriter.WriteInt32(correlationId);

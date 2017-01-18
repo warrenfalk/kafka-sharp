@@ -62,7 +62,7 @@ namespace Kafka.Protocol.Tests
                             {
                                 Partition = 0,
                                 FetchOffset = 0,
-                                MaxBytes = 1024 * 1024,
+                                MaxBytes = 96,
                             }
                         }
                     }
@@ -74,7 +74,7 @@ namespace Kafka.Protocol.Tests
             writer.WriteRequest(fetchRequest, 1, "test-client");
             var reqBytes = stream.ToArray();
 
-            Assert.Equal(reqBytes, FromHex("0000003e0001000000000001000b746573742d636c69656e74ffffffff0000001e000000010000000100035265640000000100000000000000000000000000100000"));
+            Assert.Equal(reqBytes, FromHex("0000003e0001000100000001000b746573742d636c69656e74ffffffff0000001e000000010000000100035265640000000100000000000000000000000000000060"));
         }
 
         [Fact]
@@ -96,7 +96,7 @@ namespace Kafka.Protocol.Tests
                             {
                                 Partition = 0,
                                 FetchOffset = 0,
-                                MaxBytes = 1024 * 1024,
+                                MaxBytes = 96,
                             }
                         }
                     }
@@ -108,7 +108,7 @@ namespace Kafka.Protocol.Tests
             writer.WriteRequest(fetchRequest, 1, "test-client");
             var reqBytes = stream.ToArray();
 
-            Assert.Equal(reqBytes, FromHex("0000003e0001000000000001000b746573742d636c69656e74ffffffff0000001e000000010000000100035265640000000100000000000000000000000000100000"));
+            Assert.Equal(reqBytes, FromHex("0000003e0001000200000001000b746573742d636c69656e74ffffffff0000001e000000010000000100035265640000000100000000000000000000000000000060"));
         }
 
         [Fact]
@@ -119,6 +119,7 @@ namespace Kafka.Protocol.Tests
                 ReplicaId = -1,
                 MaxWaitTime = 30,
                 MinBytes = 1,
+                MaxBytes = 256,
                 Topics =
                 {
                     new TopicFetch
@@ -130,7 +131,7 @@ namespace Kafka.Protocol.Tests
                             {
                                 Partition = 0,
                                 FetchOffset = 0,
-                                MaxBytes = 1024 * 1024,
+                                MaxBytes = 96,
                             }
                         }
                     }
@@ -142,7 +143,7 @@ namespace Kafka.Protocol.Tests
             writer.WriteRequest(fetchRequest, 1, "test-client");
             var reqBytes = stream.ToArray();
 
-            Assert.Equal(reqBytes, FromHex("0000003e0001000000000001000b746573742d636c69656e74ffffffff0000001e000000010000000100035265640000000100000000000000000000000000100000"));
+            Assert.Equal(reqBytes, FromHex("000000420001000300000001000b746573742d636c69656e74ffffffff0000001e00000001000001000000000100035265640000000100000000000000000000000000000060"));
         }
 
         [Fact]
