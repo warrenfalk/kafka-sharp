@@ -10,6 +10,7 @@ namespace Kafka.Protocol
     {
         public static ProduceResponse ProduceResponse(int version, ProtocolReader reader) => ProduceResponseImpl.Decode[version](reader);
         public static FetchResponse FetchResponse(int version, ProtocolReader reader) => FetchResponseImpl.Decode[version](reader);
+        public static OffsetsResponse OffsetsResponse(int version, ProtocolReader reader) => OffsetsResponseImpl.Decode[version](reader);
         public static MetadataResponse MetadataResponse(int version, ProtocolReader reader) => MetadataResponseImpl.Decode[version](reader);
         public static ApiVersionsResponse ApiVersionsResponse(int version, ProtocolReader reader) => ApiVersionsResponseImpl.Decode[version](reader);
 
