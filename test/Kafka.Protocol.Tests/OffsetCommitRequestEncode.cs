@@ -93,7 +93,7 @@ namespace Kafka.Protocol.Tests
                     {
                         TopicName = "Red",
                         Partitions =
-                        {`
+                        {
                             new TopicPartitionOffsetCommit
                             {
                                 Partition = 0,
