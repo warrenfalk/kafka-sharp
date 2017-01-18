@@ -69,5 +69,11 @@ namespace Kafka.Protocol
         {
             return Encoding.UTF8.GetString(memory, offset, length);
         }
+
+        public static BinaryValue Bytes(this Slice slice) => BinaryValue(slice.Buffer, slice.Offset, slice.Length);
+        public static BinaryValue BinaryValue(byte[] memory, int offset, int length)
+        {
+            return new Protocol.BinaryValue(new Slice(memory, offset, length));
+        }
     }
 }

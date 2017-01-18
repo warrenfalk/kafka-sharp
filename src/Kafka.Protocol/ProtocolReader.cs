@@ -36,6 +36,8 @@ namespace Kafka.Protocol
 
         public string ReadString() => Read(ReadInt16(), Decode.StringChars);
 
+        public string ReadBytes() => Read(ReadInt32(), Decode.Bytes);
+
         public string ReadNullableString()
         {
             var size = ReadInt16();
@@ -55,6 +57,8 @@ namespace Kafka.Protocol
 
         public T Read<T>(int size, Func<ProtocolReader, T> decodeFunc)
         {
+            if (size == -1)
+                return default(T);
             var sub = new ProtocolReader(Data.Subslice(Offset, size));
             Offset += size;
             return decodeFunc(sub);
@@ -64,6 +68,8 @@ namespace Kafka.Protocol
 
         public T Read<T>(int size, Func<Slice, T> decode)
         {
+            if (size == -1)
+                return default(T);
             T value = decode(Data.Subslice(Offset, size));
             Offset += size;
             return value;

@@ -61,6 +61,8 @@ namespace Kafka.Protocol
             Encoding.UTF8.GetBytes(value, 0, value.Length, memory, offset);
         }
 
+        public static ProtocolWriter Bytes(BinaryValue value, ProtocolWriter writer) => value == null ? writer.WriteInt32(-1) : writer.WriteInt32(value.Length).WriteRaw(value.Slice);
+
         public static ProtocolWriter List<T>(IEnumerable<T> value, ProtocolWriter writer, Func<T, ProtocolWriter, ProtocolWriter> encodeFunc)
         {
             var count = value.Count();

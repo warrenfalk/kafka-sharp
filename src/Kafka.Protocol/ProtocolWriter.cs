@@ -45,7 +45,10 @@ namespace Kafka.Protocol
 
         public ProtocolWriter WriteString(string value) => Encode.String(value, this);
 
+
         public ProtocolWriter WriteNullableString(string value) => Encode.String(value, this);
+
+        public ProtocolWriter WriteBytes(BinaryValue value) => Encode.Bytes(value, this);
 
         public ProtocolWriter WriteMessageSet(MessageSet messageSet) => MessageSet.Encode(messageSet, this);
 
