@@ -14,7 +14,6 @@ namespace Kafka.Protocol.Tests
         {
             var fetchRequest = new FetchRequest(0)
             {
-                ReplicaId = -1,
                 MaxWaitTime = 30,
                 MinBytes = 1,
                 Topics =
@@ -48,7 +47,6 @@ namespace Kafka.Protocol.Tests
         {
             var fetchRequest = new FetchRequest(1)
             {
-                ReplicaId = -1,
                 MaxWaitTime = 30,
                 MinBytes = 1,
                 Topics =
@@ -82,7 +80,6 @@ namespace Kafka.Protocol.Tests
         {
             var fetchRequest = new FetchRequest(2)
             {
-                ReplicaId = -1,
                 MaxWaitTime = 30,
                 MinBytes = 1,
                 Topics =
@@ -116,7 +113,6 @@ namespace Kafka.Protocol.Tests
         {
             var fetchRequest = new FetchRequest(3)
             {
-                ReplicaId = -1,
                 MaxWaitTime = 30,
                 MinBytes = 1,
                 MaxBytes = 256,
@@ -152,7 +148,6 @@ namespace Kafka.Protocol.Tests
             var version = (short)4;
             var fetchRequest = new FetchRequest(version)
             {
-                ReplicaId = -1,
                 MaxWaitTime = 30,
                 MinBytes = 1,
                 Topics =

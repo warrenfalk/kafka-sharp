@@ -9,7 +9,7 @@ namespace Kafka.Protocol
     {
         public ApiKey ApiKey => Protocol.ApiKey.Fetch;
         public short ApiVersion { get; }
-        public int ReplicaId { get; set; }
+        public int ReplicaId { get; set; } = -1;
         public int MaxWaitTime { get; set; }
         public int MinBytes { get; set; }
         public int MaxBytes { get; set; }
