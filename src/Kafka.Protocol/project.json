@@ -3,6 +3,17 @@
   "buildOptions": {
     "debugType": "portable"
   },
+  "configurations": {
+    "Debug": {
+      "buildOptions": {
+        "embed": {
+          "include": [ "embeddbg/**/*" ]
+        }
+      }
+    },
+    "Release": {
+    }
+  },
   "dependencies": {
     "Crc32.NET": "1.0.2",
     "Nito.AsyncEx.Coordination": "1.0.2"
