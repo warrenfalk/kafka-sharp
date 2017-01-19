@@ -21,6 +21,7 @@ namespace Kafka.Protocol
         public static ListGroupsResponse ListGroupsResponse(int version, ProtocolReader reader) => ListGroupsResponseImpl.Versions[version](reader);
         public static SaslHandshakeResponse SaslHandshakeResponse(int version, ProtocolReader reader) => SaslHandshakeResponseImpl.Versions[version](reader);
         public static ApiVersionsResponse ApiVersionsResponse(int version, ProtocolReader reader) => ApiVersionsResponseImpl.Decode[version](reader);
+        public static CreateTopicsResponse CreateTopicsResponse(int version, ProtocolReader reader) => CreateTopicsResponseImpl.Versions[version](reader);
 
         public static bool Boolean(this Slice slice) => Boolean(slice.Buffer, slice.Offset);
         public static bool Boolean(byte[] memory, int offset)
