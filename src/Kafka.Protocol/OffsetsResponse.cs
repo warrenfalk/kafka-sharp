@@ -19,7 +19,7 @@ namespace Kafka.Protocol
     public interface PartitionOffsetsResponse
     {
         int Partition { get; }
-        short ErrorCode { get; }
+        KafkaError Error { get; }
         long Timestamp { get; }
         long Offset { get; }
         [Obsolete("Deprecated at version 0.10.1.0, new versions use only Offset")]
@@ -81,20 +81,20 @@ namespace Kafka.Protocol
     class PartitionOffsetsResponseImpl : PartitionOffsetsResponse
     {
         public int Partition { get; }
-        public short ErrorCode { get; }
+        public KafkaError Error { get; }
         public long Timestamp { get; }
         public long Offset { get; }
         public IEnumerable<long> Offsets { get; }
 
         public PartitionOffsetsResponseImpl(
             int partition,
-            short errorCode,
+            KafkaError error,
             long timestamp = -1,
             long offset = -1,
             IEnumerable<long> offsets = null)
         {
             Partition = partition;
-            ErrorCode = errorCode;
+            Error = error;
             Timestamp = timestamp;
             Offset = offset > 0 ? offset : (offsets?.FirstOrDefault() ?? offset);
             Offsets = offsets ?? new[] { offset };
@@ -104,12 +104,12 @@ namespace Kafka.Protocol
             ApiKey.None,
             reader => new PartitionOffsetsResponseImpl(
                 partition: reader.ReadInt32(),
-                errorCode: reader.ReadInt16(),
+                error: reader.ReadErrorCode(),
                 offsets: reader.ReadList(r => r.ReadInt64())
             ),
             reader => new PartitionOffsetsResponseImpl(
                 partition: reader.ReadInt32(),
-                errorCode: reader.ReadInt16(),
+                error: reader.ReadErrorCode(),
                 timestamp: reader.ReadInt64(),
                 offset: reader.ReadInt64()
             )

@@ -31,7 +31,7 @@ namespace Kafka.Protocol.Tests
                 {
                     var partition = partitions[0];
                     Assert.Equal(0, partition.Partition);
-                    Assert.Equal(0, partition.ErrorCode);
+                    Assert.Equal(KafkaError.None, partition.Error);
                     Assert.Equal(12, partition.HighWatermark);
                     var messageSet = partition.MessageSet.ToArray();
                     Assert.Equal(2, messageSet.Length);
@@ -77,7 +77,7 @@ namespace Kafka.Protocol.Tests
                 {
                     var partition = partitions[0];
                     Assert.Equal(0, partition.Partition);
-                    Assert.Equal(0, partition.ErrorCode);
+                    Assert.Equal(KafkaError.None, partition.Error);
                     Assert.Equal(12, partition.HighWatermark);
                     var messageSet = partition.MessageSet.ToArray();
                     Assert.Equal(2, messageSet.Length);
@@ -123,7 +123,7 @@ namespace Kafka.Protocol.Tests
                 {
                     var partition = partitions[0];
                     Assert.Equal(0, partition.Partition);
-                    Assert.Equal(0, partition.ErrorCode);
+                    Assert.Equal(KafkaError.None, partition.Error);
                     Assert.Equal(12, partition.HighWatermark);
                     var messageSet = partition.MessageSet.ToArray();
                     Assert.Equal(2, messageSet.Length);
@@ -171,7 +171,7 @@ namespace Kafka.Protocol.Tests
                 {
                     var partition = partitions[0];
                     Assert.Equal(0, partition.Partition);
-                    Assert.Equal(0, partition.ErrorCode);
+                    Assert.Equal(KafkaError.None, partition.Error);
                     Assert.Equal(12, partition.HighWatermark);
                     var messageSet = partition.MessageSet.ToArray();
                     Assert.Equal(2, messageSet.Length);

@@ -31,7 +31,7 @@ namespace Kafka.Protocol.Tests
                 {
                     var partition = partitions[0];
                     Assert.Equal(0, partition.Partition);
-                    Assert.Equal(0, partition.ErrorCode);
+                    Assert.Equal(KafkaError.None, partition.Error);
                     Assert.Equal(0, partition.BaseOffset);
                     Assert.Equal(-1, partition.Timestamp);
                 }
@@ -60,7 +60,7 @@ namespace Kafka.Protocol.Tests
                 {
                     var partition = partitions[0];
                     Assert.Equal(0, partition.Partition);
-                    Assert.Equal(0, partition.ErrorCode);
+                    Assert.Equal(KafkaError.None, partition.Error);
                     Assert.Equal(4, partition.BaseOffset);
                     Assert.Equal(-1, partition.Timestamp);
                 }
@@ -89,7 +89,7 @@ namespace Kafka.Protocol.Tests
                 {
                     var partition = partitions[0];
                     Assert.Equal(0, partition.Partition);
-                    Assert.Equal(0, partition.ErrorCode);
+                    Assert.Equal(KafkaError.None, partition.Error);
                     Assert.Equal(8, partition.BaseOffset);
                     Assert.Equal(-1, partition.Timestamp);
                 }

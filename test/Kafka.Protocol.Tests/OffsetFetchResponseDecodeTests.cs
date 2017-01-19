@@ -32,7 +32,7 @@ namespace Kafka.Protocol.Tests
                     Assert.Equal(0, partition.Partition);
                     Assert.Equal(8, partition.Offset);
                     Assert.Equal("", partition.Metadata);
-                    Assert.Equal(0, partition.ErrorCode);
+                    Assert.Equal(KafkaError.None, partition.Error);
                 }
             }
         }
@@ -60,7 +60,7 @@ namespace Kafka.Protocol.Tests
                     Assert.Equal(0, partition.Partition);
                     Assert.Equal(-1, partition.Offset);
                     Assert.Equal("", partition.Metadata);
-                    Assert.Equal(16, partition.ErrorCode);
+                    Assert.Equal(KafkaError.NotCoordinatorForGroup, partition.Error);
                 }
             }
         }

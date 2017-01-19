@@ -13,7 +13,7 @@ namespace Kafka.Protocol
     public interface CreateTopicResponse
     {
         string TopicName { get; }
-        short ErrorCode { get; }
+        KafkaError Error { get; }
     }
 
     class CreateTopicsResponseImpl : CreateTopicsResponse
@@ -41,20 +41,20 @@ namespace Kafka.Protocol
     class CreateTopicResponseImpl : CreateTopicResponse
     {
         public string TopicName { get; }
-        public short ErrorCode { get; }
+        public KafkaError Error { get; }
         public CreateTopicResponseImpl(
             string topicName,
-            short errorCode)
+            KafkaError error)
         {
             TopicName = topicName;
-            ErrorCode = errorCode;
+            Error = error;
         }
 
         public static DecoderVersions<CreateTopicResponse> Versions = new DecoderVersions<CreateTopicResponse>(
             ApiKey.None,
             reader => new CreateTopicResponseImpl(
                 topicName: reader.ReadString(),
-                errorCode: reader.ReadInt16()
+                error: reader.ReadErrorCode()
             )
         );
     }

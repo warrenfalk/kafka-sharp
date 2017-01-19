@@ -7,7 +7,7 @@ namespace Kafka.Protocol
     public interface ApiVersionsResponse
     {
         int Version { get; }
-        short ErrorCode { get; }
+        KafkaError Error { get; }
         IEnumerable<ApiVersionSupport> ApiVersions { get; }
     }
 
@@ -21,16 +21,16 @@ namespace Kafka.Protocol
     class ApiVersionsResponseImpl : ApiVersionsResponse
     {
         public int Version { get; }
-        public short ErrorCode { get; }
+        public KafkaError Error { get; }
         public IEnumerable<ApiVersionSupport> ApiVersions { get; }
 
         public ApiVersionsResponseImpl(
             int version,
-            short errorCode,
+            KafkaError error,
             IEnumerable<ApiVersionSupport> apiVersions)
         {
             Version = version;
-            ErrorCode = errorCode;
+            Error = error;
             ApiVersions = apiVersions;
         }
 
@@ -38,7 +38,7 @@ namespace Kafka.Protocol
             ApiKey.ApiVersions,
             reader => new ApiVersionsResponseImpl(
                 version: 0,
-                errorCode: reader.ReadInt16(),
+                error: reader.ReadErrorCode(),
                 apiVersions: reader.ReadList(ApiVersionSupportImpl.Versions[0])
             )
         );

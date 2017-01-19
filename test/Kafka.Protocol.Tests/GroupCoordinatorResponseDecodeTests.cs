@@ -20,7 +20,7 @@ namespace Kafka.Protocol.Tests
 
             var groupCoordinatorResponse = Decode.GroupCoordinatorResponse(0, pstream);
             Assert.Equal(0, groupCoordinatorResponse.Version);
-            Assert.Equal(15, groupCoordinatorResponse.ErrorCode);
+            Assert.Equal(KafkaError.GroupCoordinatorNotAvailable, groupCoordinatorResponse.Error);
             Assert.Equal(-1, groupCoordinatorResponse.Coordinator.NodeId);
             Assert.Equal("", groupCoordinatorResponse.Coordinator.Host);
             Assert.Equal(-1, groupCoordinatorResponse.Coordinator.Port);

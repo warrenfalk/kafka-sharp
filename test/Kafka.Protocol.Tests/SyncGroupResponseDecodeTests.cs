@@ -20,7 +20,7 @@ namespace Kafka.Protocol.Tests
 
             var syncGroupResponse = Decode.SyncGroupResponse(0, pstream);
             Assert.Equal(0, syncGroupResponse.Version);
-            Assert.Equal(25, syncGroupResponse.ErrorCode);
+            Assert.Equal(KafkaError.UnknownMemberId, syncGroupResponse.Error);
             Assert.True(syncGroupResponse.MemberAssignment.Length == 0);
         }
 

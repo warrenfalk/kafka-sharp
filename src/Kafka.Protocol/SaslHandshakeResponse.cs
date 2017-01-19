@@ -7,23 +7,23 @@ namespace Kafka.Protocol
     public interface SaslHandshakeResponse
     {
         int Version { get; }
-        short ErrorCode { get; }
+        KafkaError Error { get; }
         IEnumerable<string> EnabledMechanisms { get; }
     }
 
     class SaslHandshakeResponseImpl : SaslHandshakeResponse
     {
         public int Version { get; }
-        public short ErrorCode { get; }
+        public KafkaError Error { get; }
         public IEnumerable<string> EnabledMechanisms { get; }
 
         public SaslHandshakeResponseImpl(
             int version,
-            short errorCode,
+            KafkaError error,
             IEnumerable<string> enabledMechanisms)
         {
             Version = version;
-            ErrorCode = errorCode;
+            Error = error;
             EnabledMechanisms = enabledMechanisms;
         }
 
@@ -31,7 +31,7 @@ namespace Kafka.Protocol
             ApiKey.SaslHandshake,
             reader => new SaslHandshakeResponseImpl(
                 version: 0,
-                errorCode: reader.ReadInt16(),
+                error: reader.ReadErrorCode(),
                 enabledMechanisms: reader.ReadList(r => r.ReadString())
             )
         );

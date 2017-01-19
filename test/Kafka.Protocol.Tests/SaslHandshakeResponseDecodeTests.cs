@@ -20,7 +20,7 @@ namespace Kafka.Protocol.Tests
 
             var saslHandshakeResponse = Decode.SaslHandshakeResponse(0, pstream);
             Assert.Equal(0, saslHandshakeResponse.Version);
-            Assert.Equal(34, saslHandshakeResponse.ErrorCode);
+            Assert.Equal(KafkaError.IllegalSaslState, saslHandshakeResponse.Error);
             Assert.Equal(new string[] { "GSSAPI" }, saslHandshakeResponse.EnabledMechanisms);
         }
 

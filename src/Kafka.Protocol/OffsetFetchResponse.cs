@@ -20,7 +20,7 @@ namespace Kafka.Protocol
         int Partition { get; }
         long Offset { get; }
         string Metadata { get; }
-        short ErrorCode { get; }
+        KafkaError Error { get; }
     }
 
     class OffsetFetchResponseImpl : OffsetFetchResponse
@@ -76,18 +76,18 @@ namespace Kafka.Protocol
         public int Partition { get; }
         public long Offset { get; }
         public string Metadata { get; }
-        public short ErrorCode { get; }
+        public KafkaError Error { get; }
 
         public PartitionOffsetFetchResponseImpl(
             int partition,
             long offset,
             string metadata,
-            short errorCode)
+            KafkaError error)
         {
             Partition = partition;
             Offset = offset;
             Metadata = metadata;
-            ErrorCode = errorCode;
+            Error = error;
         }
 
         public static DecoderVersions<PartitionOffsetFetchResponse> Versions = new DecoderVersions<PartitionOffsetFetchResponse>(
@@ -96,7 +96,7 @@ namespace Kafka.Protocol
                 partition: reader.ReadInt32(),
                 offset: reader.ReadInt64(),
                 metadata: reader.ReadNullableString(),
-                errorCode: reader.ReadInt16()
+                error: reader.ReadErrorCode()
             )
         );
     }

@@ -6,7 +6,7 @@ namespace Kafka.Protocol
     public interface JoinGroupResponse
     {
         int Version { get; }
-        short ErrorCode { get; }
+        KafkaError Error { get; }
         int GenerationId { get; }
         string GroupProtocol { get; }
         string LeaderId { get; }
@@ -23,7 +23,7 @@ namespace Kafka.Protocol
     class JoinGroupResponseImpl : JoinGroupResponse
     {
         public int Version { get; }
-        public short ErrorCode { get; }
+        public KafkaError Error { get; }
         public int GenerationId { get; }
         public string GroupProtocol { get; }
         public string LeaderId { get; }
@@ -32,7 +32,7 @@ namespace Kafka.Protocol
 
         public JoinGroupResponseImpl(
             int version,
-            short errorCode,
+            KafkaError error,
             int generationId,
             string groupProtocol,
             string leaderId,
@@ -40,7 +40,7 @@ namespace Kafka.Protocol
             IEnumerable<JoinGroupMemberResponse> members)
         {
             Version = version;
-            ErrorCode = errorCode;
+            Error = error;
             GenerationId = generationId;
             GroupProtocol = groupProtocol;
             LeaderId = leaderId;
@@ -52,7 +52,7 @@ namespace Kafka.Protocol
             ApiKey.JoinGroup,
             reader => new JoinGroupResponseImpl(
                 version: 0,
-                errorCode: reader.ReadInt16(),
+                error: reader.ReadErrorCode(),
                 generationId: reader.ReadInt32(),
                 groupProtocol: reader.ReadString(),
                 leaderId: reader.ReadString(),
@@ -61,7 +61,7 @@ namespace Kafka.Protocol
             ),
             reader => new JoinGroupResponseImpl(
                 version: 1,
-                errorCode: reader.ReadInt16(),
+                error: reader.ReadErrorCode(),
                 generationId: reader.ReadInt32(),
                 groupProtocol: reader.ReadString(),
                 leaderId: reader.ReadString(),

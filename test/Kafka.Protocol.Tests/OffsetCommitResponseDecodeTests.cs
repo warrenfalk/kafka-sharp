@@ -30,7 +30,7 @@ namespace Kafka.Protocol.Tests
                 {
                     var partition = partitions[0];
                     Assert.Equal(0, partition.Partition);
-                    Assert.Equal(0, partition.ErrorCode);
+                    Assert.Equal(KafkaError.None, partition.Error);
                 }
             }
         }
@@ -56,7 +56,7 @@ namespace Kafka.Protocol.Tests
                 {
                     var partition = partitions[0];
                     Assert.Equal(0, partition.Partition);
-                    Assert.Equal(16, partition.ErrorCode);
+                    Assert.Equal(KafkaError.NotCoordinatorForGroup, partition.Error);
                 }
             }
         }
@@ -82,7 +82,7 @@ namespace Kafka.Protocol.Tests
                 {
                     var partition = partitions[0];
                     Assert.Equal(0, partition.Partition);
-                    Assert.Equal(16, partition.ErrorCode);
+                    Assert.Equal(KafkaError.NotCoordinatorForGroup, partition.Error);
                 }
             }
         }

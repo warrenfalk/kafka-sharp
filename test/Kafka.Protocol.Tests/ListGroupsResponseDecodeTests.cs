@@ -20,7 +20,7 @@ namespace Kafka.Protocol.Tests
 
             var listGroupsResponse = Decode.ListGroupsResponse(0, pstream);
             Assert.Equal(0, listGroupsResponse.Version);
-            Assert.Equal(0, listGroupsResponse.ErrorCode);
+            Assert.Equal(KafkaError.None, listGroupsResponse.Error);
             var groups = listGroupsResponse.Groups.ToArray();
             // TODO: get test case that actually has data
             Assert.Equal(0, groups.Length);

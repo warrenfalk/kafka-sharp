@@ -6,7 +6,7 @@ namespace Kafka.Protocol
     public interface ListGroupsResponse
     {
         int Version { get; }
-        short ErrorCode { get; }
+        KafkaError Error { get; }
         IEnumerable<ListGroupResponse> Groups { get; }
     }
 
@@ -19,16 +19,16 @@ namespace Kafka.Protocol
     class ListGroupsResponseImpl : ListGroupsResponse
     {
         public int Version { get; }
-        public short ErrorCode { get; }
+        public KafkaError Error { get; }
         public IEnumerable<ListGroupResponse> Groups { get; }
 
         public ListGroupsResponseImpl(
             int version,
-            short errorCode,
+            KafkaError error,
             IEnumerable<ListGroupResponse> groups)
         {
             Version = version;
-            ErrorCode = errorCode;
+            Error = error;
             Groups = groups;
         }
 
@@ -36,7 +36,7 @@ namespace Kafka.Protocol
             ApiKey.ListGroups,
             reader => new ListGroupsResponseImpl(
                 version: 0,
-                errorCode: reader.ReadInt16(),
+                error: reader.ReadErrorCode(),
                 groups: reader.ReadList(ListGroupResponseImpl.Versions[0])
             )
         );

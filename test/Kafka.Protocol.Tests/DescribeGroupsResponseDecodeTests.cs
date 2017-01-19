@@ -24,7 +24,7 @@ namespace Kafka.Protocol.Tests
             Assert.Equal(1, groups.Length);
             {
                 var group = groups[0];
-                Assert.Equal(0, group.ErrorCode);
+                Assert.Equal(KafkaError.None, group.Error);
                 Assert.Equal("test_group", group.GroupId);
                 Assert.Equal("Dead", group.State);
                 Assert.Equal("", group.ProtocolType);

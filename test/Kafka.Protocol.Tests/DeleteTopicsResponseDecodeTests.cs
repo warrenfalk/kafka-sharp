@@ -25,12 +25,12 @@ namespace Kafka.Protocol.Tests
             {
                 var topic = topics[0];
                 Assert.Equal("Green", topic.TopicName);
-                Assert.Equal(3, topic.ErrorCode);
+                Assert.Equal(KafkaError.UnknownTopicOrPartition, topic.Error);
             }
             {
                 var topic = topics[1];
                 Assert.Equal("Orange", topic.TopicName);
-                Assert.Equal(7, topic.ErrorCode);
+                Assert.Equal(KafkaError.RequestTimedOut, topic.Error);
             }
         }
 

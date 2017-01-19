@@ -6,7 +6,7 @@ namespace Kafka.Protocol
     public interface GroupCoordinatorResponse
     {
         int Version { get; }
-        short ErrorCode { get; }
+        KafkaError Error { get; }
         CoordinatorResponse Coordinator { get; }
     }
 
@@ -20,16 +20,16 @@ namespace Kafka.Protocol
     class GroupCoordinatorResponseImpl : GroupCoordinatorResponse
     {
         public int Version { get; }
-        public short ErrorCode { get; }
+        public KafkaError Error { get; }
         public CoordinatorResponse Coordinator { get; }
 
         public GroupCoordinatorResponseImpl(
             int version,
-            short errorCode,
+            KafkaError error,
             CoordinatorResponse coordinator)
         {
             Version = version;
-            ErrorCode = errorCode;
+            Error = error;
             Coordinator = coordinator;
         }
 
@@ -37,7 +37,7 @@ namespace Kafka.Protocol
             ApiKey.GroupCoordinator,
             reader => new GroupCoordinatorResponseImpl(
                 version: 0,
-                errorCode: reader.ReadInt16(),
+                error: reader.ReadErrorCode(),
                 coordinator: reader.Read(Protocol.CoordinatorResponseImpl.Versions[0])
             )
         );

@@ -13,7 +13,7 @@ namespace Kafka.Protocol
     public interface DeleteTopicResponse
     {
         string TopicName { get; }
-        short ErrorCode { get; }
+        KafkaError Error { get; }
     }
 
     class DeleteTopicsResponseImpl : DeleteTopicsResponse
@@ -41,20 +41,20 @@ namespace Kafka.Protocol
     class DeleteTopicResponseImpl : DeleteTopicResponse
     {
         public string TopicName { get; }
-        public short ErrorCode { get; }
+        public KafkaError Error { get; }
         public DeleteTopicResponseImpl(
             string topicName,
-            short errorCode)
+            KafkaError error)
         {
             TopicName = topicName;
-            ErrorCode = errorCode;
+            Error = error;
         }
 
         public static DecoderVersions<DeleteTopicResponse> Versions = new DecoderVersions<DeleteTopicResponse>(
             ApiKey.None,
             reader => new DeleteTopicResponseImpl(
                 topicName: reader.ReadString(),
-                errorCode: reader.ReadInt16()
+                error: reader.ReadErrorCode()
             )
         );
     }

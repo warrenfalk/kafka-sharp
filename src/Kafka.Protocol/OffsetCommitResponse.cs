@@ -18,7 +18,7 @@ namespace Kafka.Protocol
     public interface PartitionOffsetCommitResponse
     {
         int Partition { get; }
-        short ErrorCode { get; }
+        KafkaError Error { get; }
     }
 
     class OffsetCommitResponseImpl : OffsetCommitResponse
@@ -76,21 +76,21 @@ namespace Kafka.Protocol
     class PartitionOffsetCommitResponseImpl : PartitionOffsetCommitResponse
     {
         public int Partition { get; }
-        public short ErrorCode { get; }
+        public KafkaError Error { get; }
 
         public PartitionOffsetCommitResponseImpl(
             int partition,
-            short errorCode)
+            KafkaError error)
         {
             Partition = partition;
-            ErrorCode = errorCode;
+            Error = error;
         }
 
         public static DecoderVersions<PartitionOffsetCommitResponse> Versions = new DecoderVersions<PartitionOffsetCommitResponse>(
             ApiKey.None,
             reader => new PartitionOffsetCommitResponseImpl(
                 partition: reader.ReadInt32(),
-                errorCode: reader.ReadInt16()
+                error: reader.ReadErrorCode()
             )
         );
     }

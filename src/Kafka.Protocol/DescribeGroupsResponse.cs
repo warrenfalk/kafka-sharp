@@ -11,7 +11,7 @@ namespace Kafka.Protocol
 
     public interface DescribeGroupResponse
     {
-        short ErrorCode { get; }
+        KafkaError Error { get; }
         string GroupId { get; }
         string State { get; }
         string ProtocolType { get; }
@@ -52,7 +52,7 @@ namespace Kafka.Protocol
 
     class DescribeGroupResponseImpl : DescribeGroupResponse
     {
-        public short ErrorCode { get; }
+        public KafkaError Error { get; }
         public string GroupId { get; }
         public string State { get; }
         public string ProtocolType { get; }
@@ -60,14 +60,14 @@ namespace Kafka.Protocol
         public IEnumerable<DescribeGroupMemberResponse> Members { get; }
 
         public DescribeGroupResponseImpl(
-            short errorCode,
+            KafkaError error,
             string groupId,
             string state,
             string protocolType,
             string protocol,
             IEnumerable<DescribeGroupMemberResponse> members)
         {
-            ErrorCode = errorCode;
+            Error = error;
             GroupId = groupId;
             State = state;
             ProtocolType = protocolType;
@@ -78,7 +78,7 @@ namespace Kafka.Protocol
         public static DecoderVersions<DescribeGroupResponse> Versions = new DecoderVersions<DescribeGroupResponse>(
             ApiKey.None,
             reader => new DescribeGroupResponseImpl(
-                errorCode: reader.ReadInt16(),
+                error: reader.ReadErrorCode(),
                 groupId: reader.ReadString(),
                 state: reader.ReadString(),
                 protocolType: reader.ReadString(),

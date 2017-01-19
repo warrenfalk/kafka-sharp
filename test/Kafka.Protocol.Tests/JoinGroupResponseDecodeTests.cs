@@ -20,7 +20,7 @@ namespace Kafka.Protocol.Tests
 
             var joinGroupResponse = Decode.JoinGroupResponse(0, pstream);
             Assert.Equal(0, joinGroupResponse.Version);
-            Assert.Equal(25, joinGroupResponse.ErrorCode);
+            Assert.Equal(KafkaError.UnknownMemberId, joinGroupResponse.Error);
             Assert.Equal(0, joinGroupResponse.GenerationId);
             Assert.Equal("", joinGroupResponse.GroupProtocol);
             Assert.Equal("", joinGroupResponse.LeaderId);
@@ -40,7 +40,7 @@ namespace Kafka.Protocol.Tests
 
             var joinGroupResponse = Decode.JoinGroupResponse(1, pstream);
             Assert.Equal(1, joinGroupResponse.Version);
-            Assert.Equal(25, joinGroupResponse.ErrorCode);
+            Assert.Equal(KafkaError.UnknownMemberId, joinGroupResponse.Error);
             Assert.Equal(0, joinGroupResponse.GenerationId);
             Assert.Equal("", joinGroupResponse.GroupProtocol);
             Assert.Equal("", joinGroupResponse.LeaderId);

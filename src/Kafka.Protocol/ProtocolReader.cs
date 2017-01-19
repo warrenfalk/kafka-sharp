@@ -24,6 +24,8 @@ namespace Kafka.Protocol
             return slice;
         }
 
+        public KafkaError ReadErrorCode() => KafkaError.FromCode(ReadInt16());
+
         public bool ReadBoolean() => Read(1, Decode.Boolean);
 
         public sbyte ReadInt8() => Read(1, Decode.Int8);

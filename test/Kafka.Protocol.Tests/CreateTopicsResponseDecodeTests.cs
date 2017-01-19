@@ -25,7 +25,7 @@ namespace Kafka.Protocol.Tests
             {
                 var topic = topics[0];
                 Assert.Equal("Orange", topic.TopicName);
-                Assert.Equal(0, topic.ErrorCode);
+                Assert.Equal(KafkaError.None, topic.Error);
             }
         }
 

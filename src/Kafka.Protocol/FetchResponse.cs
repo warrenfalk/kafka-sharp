@@ -19,7 +19,7 @@ namespace Kafka.Protocol
     public interface PartitionFetchResponse
     {
         int Partition { get; }
-        short ErrorCode { get; }
+        KafkaError Error { get; }
         long HighWatermark { get; }
         IEnumerable<Message> MessageSet { get; }
     }
@@ -89,18 +89,18 @@ namespace Kafka.Protocol
     class PartitionFetchResponseImpl : PartitionFetchResponse
     {
         public int Partition { get; }
-        public short ErrorCode { get; }
+        public KafkaError Error { get; }
         public long HighWatermark { get; }
         public IEnumerable<Message> MessageSet { get; } = new MessageSet();
 
         public PartitionFetchResponseImpl(
             int partition,
-            short errorCode,
+            KafkaError error,
             long highWatermark,
             IEnumerable<Message> messageSet)
         {
             Partition = partition;
-            ErrorCode = errorCode;
+            Error = error;
             HighWatermark = highWatermark;
             MessageSet = messageSet;
         }
@@ -109,7 +109,7 @@ namespace Kafka.Protocol
             ApiKey.None,
             reader => new PartitionFetchResponseImpl(
                 partition: reader.ReadInt32(),
-                errorCode: reader.ReadInt16(),
+                error: reader.ReadErrorCode(),
                 highWatermark: reader.ReadInt64(),
                 messageSet: reader.Read(reader.ReadInt32(), Protocol.MessageSet.Decode)
             )

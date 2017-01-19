@@ -6,23 +6,23 @@ namespace Kafka.Protocol
     public interface SyncGroupResponse
     {
         int Version { get; }
-        short ErrorCode { get; }
+        KafkaError Error { get; }
         BinaryValue MemberAssignment { get; }
     }
 
     class SyncGroupResponseImpl : SyncGroupResponse
     {
         public int Version { get; }
-        public short ErrorCode { get; }
+        public KafkaError Error { get; }
         public BinaryValue MemberAssignment { get; }
 
         public SyncGroupResponseImpl(
             int version,
-            short errorCode,
+            KafkaError error,
             BinaryValue memberAssignment)
         {
             Version = version;
-            ErrorCode = errorCode;
+            Error = error;
             MemberAssignment = memberAssignment;
         }
 
@@ -30,7 +30,7 @@ namespace Kafka.Protocol
             ApiKey.SyncGroup,
             reader => new SyncGroupResponseImpl(
                 version: 0,
-                errorCode: reader.ReadInt16(),
+                error: reader.ReadErrorCode(),
                 memberAssignment: reader.ReadBytes()
             )
         );

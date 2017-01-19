@@ -20,7 +20,7 @@ namespace Kafka.Protocol.Tests
 
             var apiVersionsResponse = Decode.ApiVersionsResponse(0, pstream);
             Assert.Equal(0, apiVersionsResponse.Version);
-            Assert.Equal(0, apiVersionsResponse.ErrorCode);
+            Assert.Equal(KafkaError.None, apiVersionsResponse.Error);
             var versions = apiVersionsResponse.ApiVersions.ToArray();
             Assert.Equal(21, versions.Length);
             ApiVersionSupport avs;

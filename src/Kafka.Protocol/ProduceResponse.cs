@@ -19,7 +19,7 @@ namespace Kafka.Protocol
     public interface PartitionProduceResponse
     {
         int Partition { get; }
-        short ErrorCode { get; }
+        KafkaError Error { get; }
         long BaseOffset { get; }
         long Timestamp { get; }
     }
@@ -88,18 +88,18 @@ namespace Kafka.Protocol
     class PartitionProduceResponseImpl : PartitionProduceResponse
     {
         public int Partition { get; }
-        public short ErrorCode { get; }
+        public KafkaError Error { get; }
         public long BaseOffset { get; }
         public long Timestamp { get; }
 
         public PartitionProduceResponseImpl(
             int partition,
-            short errorCode,
+            KafkaError error,
             long baseOffset,
             long timestamp = -1)
         {
             Partition = partition;
-            ErrorCode = errorCode;
+            Error = error;
             BaseOffset = baseOffset;
             Timestamp = timestamp;
         }
@@ -108,12 +108,12 @@ namespace Kafka.Protocol
             ApiKey.None,
             reader => new PartitionProduceResponseImpl(
                 partition: reader.ReadInt32(),
-                errorCode: reader.ReadInt16(),
+                error: reader.ReadErrorCode(),
                 baseOffset: reader.ReadInt64()
             ),
             reader => new PartitionProduceResponseImpl(
                 partition: reader.ReadInt32(),
-                errorCode: reader.ReadInt16(),
+                error: reader.ReadErrorCode(),
                 baseOffset: reader.ReadInt64(),
                 timestamp: reader.ReadInt64()
             )
