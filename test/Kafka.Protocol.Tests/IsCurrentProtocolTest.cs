@@ -14,7 +14,9 @@ namespace Kafka.Protocol.Tests
     /// code is behind.
     /// 
     /// In order for this to work, we must never commit a change to the protocol.html file that does not
-    /// also accompany support in the code for that change.
+    /// also accompany support in the code for that change.  Then when a change is detected run the
+    /// following script to download the latest version of the html, make all the corresponding changes
+    /// and commit it all
     /// 
     /// </summary>
     public class IsCurrentProtocolTest
